@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">HomeWork</string>
+    <string name="app_name">Поиск фильмов</string>
+    <string name="hello">Hello</string>
+    <string name="title1">Аферистка</string>
+    <string name="title2">Папик 2</string>
+    <string name="title3">Лига справедливости</string>
+    <string name="title4">Бесстыжие </string>
+    <string name="detail">Детали</string>
 </resources>

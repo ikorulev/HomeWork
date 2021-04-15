@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -30,10 +31,10 @@ class MainActivity : AppCompatActivity() {
 
         btn1.setOnClickListener() {
             btnNumber = 1
-            title1.background = getDrawable(R.color.yellow)
-            title2.background = getDrawable(R.color.white)
-            title3.background = getDrawable(R.color.white)
-            title4.background = getDrawable(R.color.white)
+            title1.background = ContextCompat.getDrawable(this, R.color.yellow)
+            title2.background = ContextCompat.getDrawable(this, R.color.white)
+            title3.background = ContextCompat.getDrawable(this, R.color.white)
+            title4.background = ContextCompat.getDrawable(this, R.color.white)
 
             val intent = Intent(this, SecondActivity::class.java)
             intent.putExtra(SecondActivity.BUTTON_NUMBER, btnNumber)
@@ -42,10 +43,10 @@ class MainActivity : AppCompatActivity() {
 
         btn2.setOnClickListener() {
             btnNumber = 2
-            title1.background = getDrawable(R.color.white)
-            title2.background = getDrawable(R.color.yellow)
-            title3.background = getDrawable(R.color.white)
-            title4.background = getDrawable(R.color.white)
+            title1.background = ContextCompat.getDrawable(this, R.color.white)
+            title2.background = ContextCompat.getDrawable(this, R.color.yellow)
+            title3.background = ContextCompat.getDrawable(this, R.color.white)
+            title4.background = ContextCompat.getDrawable(this, R.color.white)
 
             val intent = Intent(this, SecondActivity::class.java)
             intent.putExtra(SecondActivity.BUTTON_NUMBER, btnNumber)
@@ -54,10 +55,10 @@ class MainActivity : AppCompatActivity() {
 
         btn3.setOnClickListener() {
             btnNumber = 3
-            title1.background = getDrawable(R.color.white)
-            title2.background = getDrawable(R.color.white)
-            title3.background = getDrawable(R.color.yellow)
-            title4.background = getDrawable(R.color.white)
+            title1.background = ContextCompat.getDrawable(this, R.color.white)
+            title2.background = ContextCompat.getDrawable(this, R.color.white)
+            title3.background = ContextCompat.getDrawable(this, R.color.yellow)
+            title4.background = ContextCompat.getDrawable(this, R.color.white)
 
             val intent = Intent(this, SecondActivity::class.java)
             intent.putExtra(SecondActivity.BUTTON_NUMBER, btnNumber)
@@ -66,15 +67,16 @@ class MainActivity : AppCompatActivity() {
 
         btn4.setOnClickListener() {
             btnNumber = 4
-            title1.background = getDrawable(R.color.white)
-            title2.background = getDrawable(R.color.white)
-            title3.background = getDrawable(R.color.white)
-            title4.background = getDrawable(R.color.yellow)
+            title1.background = ContextCompat.getDrawable(this, R.color.white)
+            title2.background = ContextCompat.getDrawable(this, R.color.white)
+            title3.background = ContextCompat.getDrawable(this, R.color.white)
+            title4.background = ContextCompat.getDrawable(this, R.color.yellow)
 
             val intent = Intent(this, SecondActivity::class.java)
             intent.putExtra(SecondActivity.BUTTON_NUMBER, btnNumber)
             startActivity(intent)
         }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -88,30 +90,30 @@ class MainActivity : AppCompatActivity() {
         savedInstanceState?.let {
             btnNumber = it.getInt(BUTTON_NUMBER)
             if (btnNumber == 1) {
-                title1.background = getDrawable(R.color.yellow)
-                title2.background = getDrawable(R.color.white)
-                title3.background = getDrawable(R.color.white)
-                title4.background = getDrawable(R.color.white)
+                title1.background = ContextCompat.getDrawable(this, R.color.yellow)
+                title2.background = ContextCompat.getDrawable(this, R.color.white)
+                title3.background = ContextCompat.getDrawable(this, R.color.white)
+                title4.background = ContextCompat.getDrawable(this, R.color.white)
             } else if (btnNumber == 2) {
-                title1.background = getDrawable(R.color.white)
-                title2.background = getDrawable(R.color.yellow)
-                title3.background = getDrawable(R.color.white)
-                title4.background = getDrawable(R.color.white)
+                title1.background = ContextCompat.getDrawable(this, R.color.white)
+                title2.background = ContextCompat.getDrawable(this, R.color.yellow)
+                title3.background = ContextCompat.getDrawable(this, R.color.white)
+                title4.background = ContextCompat.getDrawable(this, R.color.white)
             } else if (btnNumber == 3) {
-                title1.background = getDrawable(R.color.white)
-                title2.background = getDrawable(R.color.white)
-                title3.background = getDrawable(R.color.yellow)
-                title4.background = getDrawable(R.color.white)
+                title1.background = ContextCompat.getDrawable(this, R.color.white)
+                title2.background = ContextCompat.getDrawable(this, R.color.white)
+                title3.background = ContextCompat.getDrawable(this, R.color.yellow)
+                title4.background = ContextCompat.getDrawable(this, R.color.white)
             } else if (btnNumber == 4) {
-                title1.background = getDrawable(R.color.white)
-                title2.background = getDrawable(R.color.white)
-                title3.background = getDrawable(R.color.white)
-                title4.background = getDrawable(R.color.yellow)
+                title1.background = ContextCompat.getDrawable(this, R.color.white)
+                title2.background = ContextCompat.getDrawable(this, R.color.white)
+                title3.background = ContextCompat.getDrawable(this, R.color.white)
+                title4.background = ContextCompat.getDrawable(this, R.color.yellow)
             } else {
-                title1.background = getDrawable(R.color.white)
-                title2.background = getDrawable(R.color.white)
-                title3.background = getDrawable(R.color.white)
-                title4.background = getDrawable(R.color.white)
+                title1.background = ContextCompat.getDrawable(this, R.color.white)
+                title2.background = ContextCompat.getDrawable(this, R.color.white)
+                title3.background = ContextCompat.getDrawable(this, R.color.white)
+                title4.background = ContextCompat.getDrawable(this, R.color.white)
             }
         }
     }

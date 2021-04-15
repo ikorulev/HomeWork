@@ -42,7 +42,8 @@ class SecondActivity : AppCompatActivity() {
 
         btnInvite.setOnClickListener(){
             val intent = Intent(Intent.ACTION_SEND)
-            intent.setDataAndType(Uri.parse("mailto:"),"text/plain")
+            intent.setData(Uri.parse("mailto:"))
+            intent.setType("text/plain")
             intent.putExtra(Intent.EXTRA_EMAIL,  "tom@example.com")
             intent.putExtra(Intent.EXTRA_TEXT,  "${getString(R.string.messageText)}: $titleStr")
 

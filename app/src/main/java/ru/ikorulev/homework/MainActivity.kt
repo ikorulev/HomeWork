@@ -1,7 +1,6 @@
 package ru.ikorulev.homework
 
 import android.content.Intent
-import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -36,8 +35,8 @@ class MainActivity : AppCompatActivity() {
             title3.background = ContextCompat.getDrawable(this, R.color.white)
             title4.background = ContextCompat.getDrawable(this, R.color.white)
 
-            val intent = Intent(this, SecondActivity::class.java)
-            intent.putExtra(SecondActivity.BUTTON_NUMBER, btnNumber)
+            val intent = Intent(this, FilmDescription::class.java)
+            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
             startActivity(intent)
         }
 
@@ -48,8 +47,8 @@ class MainActivity : AppCompatActivity() {
             title3.background = ContextCompat.getDrawable(this, R.color.white)
             title4.background = ContextCompat.getDrawable(this, R.color.white)
 
-            val intent = Intent(this, SecondActivity::class.java)
-            intent.putExtra(SecondActivity.BUTTON_NUMBER, btnNumber)
+            val intent = Intent(this, FilmDescription::class.java)
+            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
             startActivity(intent)
         }
 
@@ -60,8 +59,8 @@ class MainActivity : AppCompatActivity() {
             title3.background = ContextCompat.getDrawable(this, R.color.yellow)
             title4.background = ContextCompat.getDrawable(this, R.color.white)
 
-            val intent = Intent(this, SecondActivity::class.java)
-            intent.putExtra(SecondActivity.BUTTON_NUMBER, btnNumber)
+            val intent = Intent(this, FilmDescription::class.java)
+            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
             startActivity(intent)
         }
 
@@ -72,8 +71,8 @@ class MainActivity : AppCompatActivity() {
             title3.background = ContextCompat.getDrawable(this, R.color.white)
             title4.background = ContextCompat.getDrawable(this, R.color.yellow)
 
-            val intent = Intent(this, SecondActivity::class.java)
-            intent.putExtra(SecondActivity.BUTTON_NUMBER, btnNumber)
+            val intent = Intent(this, FilmDescription::class.java)
+            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
             startActivity(intent)
         }
 

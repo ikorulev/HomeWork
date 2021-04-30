@@ -1,3 +1,3 @@
 package ru.ikorulev.homework
 
-class FilmItem(val filmNumber: Int, val  filmTitle: String, val filmImage: Int)
+class FilmItem(val filmNumber: Int, val  filmTitle: String, val filmImage: Int, var filmFavorite: Boolean)

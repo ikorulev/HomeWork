@@ -16,4 +16,5 @@
     <string name="comment">Comment</string>
     <string name="film">Film</string>
     <string name="filmImage">Film image</string>
+    <string name="favorite">Favorite</string>
 </resources>

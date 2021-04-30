@@ -1,18 +1,19 @@
 <resources>
-    <string name="app_name">Поиск фильмов</string>
+    <string name="app_name">Finding movie.</string>
     <string name="hello">Hello</string>
-    <string name="title1">Аферистка</string>
-    <string name="title2">Папик 2</string>
-    <string name="title3">Лига справедливости</string>
-    <string name="title4">Бесстыжие </string>
-    <string name="detail">Детали</string>
-    <string name="detail1">«Аферистка» (англ. I Care a Lot) — криминальная комедия 2020 года, снятая Дж. Блэйксоном. В главных ролях: Розамунд Пайк, Эйса Гонсалес, Крис Мессина, Дайан Уист и Питер Динклейдж. За актерскую работу в фильме Пайк получила премию «Золотой глобус» за «Лучшую женскую роль в комедии или мюзикле»</string>
-    <string name="detail2">«Папик» (укр. Папік) — украинский комедийный телесериал студии «Квартал 95». Главным героем истории стал всеми забытый пожилой актёр. Устав от унылой жизни, дед хочет расстаться с ней красиво, поэтому перед смертью заглядывает в барбершоп...</string>
-    <string name="detail3">«Лига справедливости» (англ. Justice League) — американский супергеройский фильм 2017 года, основанный на комиксах об одноимённой команде супергероев издательства DC Comics. Картина стала продолжением ленты «Бэтмен против Супермена» (2016)</string>
-    <string name="detail4">«Бесстыдники», или «Бесстыжие» (англ. Shameless) — американский телесериал, выходящий на канале Showtime с 9 января 2011 года. Шоу является адаптацией одноимённого британского сериала. Действие сериала разворачивается в южной части Чикаго и снимается по всему городу.</string>
-    <string name="inviteFriend">Пригласи друга</string>
-    <string name="messageText">Предлагаю пойти в кино</string>
-    <string name="like">Нравится</string>
-    <string name="comment">Комментарий</string>
-    <string name="film">Фильм</string>
+    <string name="title1">I Care a Lot</string>
+    <string name="title2">Daddy 2</string>
+    <string name="title3">Justice League</string>
+    <string name="title4">Shameless</string>
+    <string name="detail">Details</string>
+    <string name="detail1" translatable="false">«Аферистка» (англ. I Care a Lot) — криминальная комедия 2020 года, снятая Дж. Блэйксоном. В главных ролях: Розамунд Пайк, Эйса Гонсалес, Крис Мессина, Дайан Уист и Питер Динклейдж. За актерскую работу в фильме Пайк получила премию «Золотой глобус» за «Лучшую женскую роль в комедии или мюзикле»</string>
+    <string name="detail2" translatable="false">«Папик» (укр. Папік) — украинский комедийный телесериал студии «Квартал 95». Главным героем истории стал всеми забытый пожилой актёр. Устав от унылой жизни, дед хочет расстаться с ней красиво, поэтому перед смертью заглядывает в барбершоп...</string>
+    <string name="detail3" translatable="false">«Лига справедливости» (англ. Justice League) — американский супергеройский фильм 2017 года, основанный на комиксах об одноимённой команде супергероев издательства DC Comics. Картина стала продолжением ленты «Бэтмен против Супермена» (2016)</string>
+    <string name="detail4" translatable="false">«Бесстыдники», или «Бесстыжие» (англ. Shameless) — американский телесериал, выходящий на канале Showtime с 9 января 2011 года. Шоу является адаптацией одноимённого британского сериала. Действие сериала разворачивается в южной части Чикаго и снимается по всему городу.</string>
+    <string name="inviteFriend">Invite a friend</string>
+    <string name="messageText">I suggest we go to the movies</string>
+    <string name="like">Like</string>
+    <string name="comment">Comment</string>
+    <string name="film">Film</string>
+    <string name="filmImage">Film image</string>
 </resources>

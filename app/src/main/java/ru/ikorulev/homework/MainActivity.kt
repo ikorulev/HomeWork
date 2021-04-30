@@ -1,81 +1,61 @@
 package ru.ikorulev.homework
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
     companion object {
         private const val BUTTON_NUMBER = "BUTTON_NUMBER"
+        var btnNumber = 0
      }
 
-    var btnNumber = 0
 
-    val btn1 by lazy { findViewById<Button>(R.id.btn1) }
-    val btn2 by lazy { findViewById<Button>(R.id.btn2) }
-    val btn3 by lazy { findViewById<Button>(R.id.btn3) }
-    val btn4 by lazy { findViewById<Button>(R.id.btn4) }
-
-    val title1 by lazy { findViewById<TextView>(R.id.title1) }
-    val title2 by lazy { findViewById<TextView>(R.id.title2) }
-    val title3 by lazy { findViewById<TextView>(R.id.title3) }
-    val title4 by lazy { findViewById<TextView>(R.id.title4) }
+    private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
+    private val films = mutableListOf<FilmItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
 
-        btn1.setOnClickListener() {
-            btnNumber = 1
-            title1.background = ContextCompat.getDrawable(this, R.color.yellow)
-            title2.background = ContextCompat.getDrawable(this, R.color.white)
-            title3.background = ContextCompat.getDrawable(this, R.color.white)
-            title4.background = ContextCompat.getDrawable(this, R.color.white)
+        initFilms()
+        initRecycler()
 
-            val intent = Intent(this, FilmDescription::class.java)
-            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
-            startActivity(intent)
-        }
+    }
 
-        btn2.setOnClickListener() {
-            btnNumber = 2
-            title1.background = ContextCompat.getDrawable(this, R.color.white)
-            title2.background = ContextCompat.getDrawable(this, R.color.yellow)
-            title3.background = ContextCompat.getDrawable(this, R.color.white)
-            title4.background = ContextCompat.getDrawable(this, R.color.white)
+    private fun initFilms() {
+        films.add(FilmItem(1, getString(R.string.title1),R.drawable.img1))
+        films.add(FilmItem(2, getString(R.string.title2),R.drawable.img2))
+        films.add(FilmItem(3, getString(R.string.title3),R.drawable.img3))
+        films.add(FilmItem(4, getString(R.string.title4),R.drawable.img4))
+    }
 
-            val intent = Intent(this, FilmDescription::class.java)
-            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
-            startActivity(intent)
-        }
+    private fun initRecycler() {
+        val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = layoutManager
 
-        btn3.setOnClickListener() {
-            btnNumber = 3
-            title1.background = ContextCompat.getDrawable(this, R.color.white)
-            title2.background = ContextCompat.getDrawable(this, R.color.white)
-            title3.background = ContextCompat.getDrawable(this, R.color.yellow)
-            title4.background = ContextCompat.getDrawable(this, R.color.white)
+        recyclerView.adapter = FilmAdapter(films, object : FilmAdapter.FilmClickListener {
+            override fun onFilmClick(filmItem: FilmItem){
+                //filmItem.filmColor = Color.YELLOW
+                //recyclerView.adapter?.notifyItemChanged(filmItem.filmNumber-1)
 
-            val intent = Intent(this, FilmDescription::class.java)
-            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
-            startActivity(intent)
-        }
+                btnNumber = filmItem.filmNumber
+                recyclerView.adapter?.notifyDataSetChanged()
 
-        btn4.setOnClickListener() {
-            btnNumber = 4
-            title1.background = ContextCompat.getDrawable(this, R.color.white)
-            title2.background = ContextCompat.getDrawable(this, R.color.white)
-            title3.background = ContextCompat.getDrawable(this, R.color.white)
-            title4.background = ContextCompat.getDrawable(this, R.color.yellow)
+                val intent = Intent(applicationContext, FilmDescription::class.java)
 
-            val intent = Intent(this, FilmDescription::class.java)
-            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
-            startActivity(intent)
-        }
-
+                intent.putExtra(FilmDescription.BUTTON_NUMBER, filmItem.filmNumber)
+                startActivity(intent)
+            }
+        })
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -88,32 +68,6 @@ class MainActivity : AppCompatActivity() {
 
         savedInstanceState?.let {
             btnNumber = it.getInt(BUTTON_NUMBER)
-            if (btnNumber == 1) {
-                title1.background = ContextCompat.getDrawable(this, R.color.yellow)
-                title2.background = ContextCompat.getDrawable(this, R.color.white)
-                title3.background = ContextCompat.getDrawable(this, R.color.white)
-                title4.background = ContextCompat.getDrawable(this, R.color.white)
-            } else if (btnNumber == 2) {
-                title1.background = ContextCompat.getDrawable(this, R.color.white)
-                title2.background = ContextCompat.getDrawable(this, R.color.yellow)
-                title3.background = ContextCompat.getDrawable(this, R.color.white)
-                title4.background = ContextCompat.getDrawable(this, R.color.white)
-            } else if (btnNumber == 3) {
-                title1.background = ContextCompat.getDrawable(this, R.color.white)
-                title2.background = ContextCompat.getDrawable(this, R.color.white)
-                title3.background = ContextCompat.getDrawable(this, R.color.yellow)
-                title4.background = ContextCompat.getDrawable(this, R.color.white)
-            } else if (btnNumber == 4) {
-                title1.background = ContextCompat.getDrawable(this, R.color.white)
-                title2.background = ContextCompat.getDrawable(this, R.color.white)
-                title3.background = ContextCompat.getDrawable(this, R.color.white)
-                title4.background = ContextCompat.getDrawable(this, R.color.yellow)
-            } else {
-                title1.background = ContextCompat.getDrawable(this, R.color.white)
-                title2.background = ContextCompat.getDrawable(this, R.color.white)
-                title3.background = ContextCompat.getDrawable(this, R.color.white)
-                title4.background = ContextCompat.getDrawable(this, R.color.white)
-            }
         }
     }
 }

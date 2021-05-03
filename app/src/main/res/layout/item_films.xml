@@ -10,15 +10,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="@string/filmImage"
-        android:src="@drawable/img1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:adjustViewBounds="true"
+        tools:src="@tools:sample/backgrounds/scenic"/>
 
     <ImageView
         android:id="@+id/filmFavorite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/favorite"
+        android:contentDescription="@string/favourites"
         android:layout_marginStart="8dp"
         android:src="@drawable/favorite_border"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -42,11 +43,11 @@
     <Button
         android:id="@+id/filmButton"
         style="@android:style/TextAppearance.Large"
+        android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:text="@string/detail"
-        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/filmTitle"

@@ -6,7 +6,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import ru.ikorulev.homework.MainActivity.Companion.btnNumber
 
 class FilmVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
     val filmImage: ImageView = itemView.findViewById(R.id.filmImage)
@@ -15,14 +14,14 @@ class FilmVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
     val filmButton: Button = itemView.findViewById(R.id.filmButton)
 
     fun bind(item: FilmItem) {
-        if (item.filmFavorite) {
+        if (item.isFavorite) {
             filmFavorite.setImageResource(R.drawable.favorite_fill)
         } else {
             filmFavorite.setImageResource(R.drawable.favorite_border)
         }
 
         filmTitle.text = item.filmTitle
-        if (item.filmNumber == btnNumber) {
+        if (item.isSelected) {
             filmTitle.setBackgroundColor(Color.YELLOW)
         } else {
             filmTitle.setBackgroundColor(Color.WHITE)

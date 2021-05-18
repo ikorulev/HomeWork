@@ -53,9 +53,10 @@ class MainActivity : AppCompatActivity() {
         recyclerFilm.adapter = FilmAdapter(DataRepository.films, object : FilmAdapter.FilmClickListener {
             override fun onFilmClick(filmItem: FilmItem){
 
-                //сначала у всех сбросить, чтоб выбран был только один
-                DataRepository.films.forEach{  it.isSelected = false }
-                filmItem.isSelected = true
+                DataRepository.films.forEach {
+                      if (it == filmItem) {it.isSelected = true}
+                      else {it.isSelected = false}
+                }
 
                 recyclerFilm.adapter?.notifyDataSetChanged()
 

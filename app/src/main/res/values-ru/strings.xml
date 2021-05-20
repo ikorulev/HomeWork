@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Поиск фильмов</string>
+    <string name="hello">Привет</string>
+    <string name="title1">Аферистка</string>
+    <string name="title3">Лига справедливости</string>
+    <string name="title2">Папик 2</string>
+    <string name="title4">"Бесстыжие "</string>
+    <string name="detail">Детали</string>
+    <string name="inviteFriend">Пригласи друга</string>
+    <string name="messageText">Предлагаю пойти в кино</string>
+    <string name="like">Нравится</string>
+    <string name="comment">Комментарий</string>
+    <string name="film">Фильм</string>
+    <string name="filmImage">Изображение фильма</string>
+    <string name="favourites">Избранное</string>
+</resources>

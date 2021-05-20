@@ -1,119 +1,97 @@
 package ru.ikorulev.homework
 
+import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.TextView
-import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
-    companion object {
-        private const val BUTTON_NUMBER = "BUTTON_NUMBER"
-     }
 
-    var btnNumber = 0
-
-    val btn1 by lazy { findViewById<Button>(R.id.btn1) }
-    val btn2 by lazy { findViewById<Button>(R.id.btn2) }
-    val btn3 by lazy { findViewById<Button>(R.id.btn3) }
-    val btn4 by lazy { findViewById<Button>(R.id.btn4) }
-
-    val title1 by lazy { findViewById<TextView>(R.id.title1) }
-    val title2 by lazy { findViewById<TextView>(R.id.title2) }
-    val title3 by lazy { findViewById<TextView>(R.id.title3) }
-    val title4 by lazy { findViewById<TextView>(R.id.title4) }
+    private val recyclerFilm by lazy { findViewById<RecyclerView>(R.id.recyclerFilm) }
+    private val btnFavourites by lazy { findViewById<Button>(R.id.btnFavourites) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        btn1.setOnClickListener() {
-            btnNumber = 1
-            title1.background = ContextCompat.getDrawable(this, R.color.yellow)
-            title2.background = ContextCompat.getDrawable(this, R.color.white)
-            title3.background = ContextCompat.getDrawable(this, R.color.white)
-            title4.background = ContextCompat.getDrawable(this, R.color.white)
+        initFilms()
+        initRecycler()
 
-            val intent = Intent(this, FilmDescription::class.java)
-            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
-            startActivity(intent)
-        }
+        btnFavourites.setOnClickListener() {
 
-        btn2.setOnClickListener() {
-            btnNumber = 2
-            title1.background = ContextCompat.getDrawable(this, R.color.white)
-            title2.background = ContextCompat.getDrawable(this, R.color.yellow)
-            title3.background = ContextCompat.getDrawable(this, R.color.white)
-            title4.background = ContextCompat.getDrawable(this, R.color.white)
-
-            val intent = Intent(this, FilmDescription::class.java)
-            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
-            startActivity(intent)
-        }
-
-        btn3.setOnClickListener() {
-            btnNumber = 3
-            title1.background = ContextCompat.getDrawable(this, R.color.white)
-            title2.background = ContextCompat.getDrawable(this, R.color.white)
-            title3.background = ContextCompat.getDrawable(this, R.color.yellow)
-            title4.background = ContextCompat.getDrawable(this, R.color.white)
-
-            val intent = Intent(this, FilmDescription::class.java)
-            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
-            startActivity(intent)
-        }
-
-        btn4.setOnClickListener() {
-            btnNumber = 4
-            title1.background = ContextCompat.getDrawable(this, R.color.white)
-            title2.background = ContextCompat.getDrawable(this, R.color.white)
-            title3.background = ContextCompat.getDrawable(this, R.color.white)
-            title4.background = ContextCompat.getDrawable(this, R.color.yellow)
-
-            val intent = Intent(this, FilmDescription::class.java)
-            intent.putExtra(FilmDescription.BUTTON_NUMBER, btnNumber)
+            val intent = Intent(this, FilmFavourites::class.java)
+            intent.putParcelableArrayListExtra(FilmFavourites.LIST_FAVOURITES, DataRepository.favourites as ArrayList<FilmItem>)
             startActivity(intent)
         }
 
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putInt(BUTTON_NUMBER, btnNumber)
+    private fun initFilms() {
+        if (DataRepository.films.isEmpty()){
+            DataRepository.films.add(FilmItem(getString(R.string.title1), getString(R.string.detail1), R.drawable.img1,false,false))
+            DataRepository.films.add(FilmItem(getString(R.string.title2), getString(R.string.detail2), R.drawable.img2,false,false))
+            DataRepository.films.add(FilmItem(getString(R.string.title3), getString(R.string.detail3), R.drawable.img3,false,false))
+            DataRepository.films.add(FilmItem(getString(R.string.title4), getString(R.string.detail4), R.drawable.img4,false,false))}
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
+    private fun initRecycler() {
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
+            val layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+            recyclerFilm.layoutManager = layoutManager
 
-        savedInstanceState?.let {
-            btnNumber = it.getInt(BUTTON_NUMBER)
-            if (btnNumber == 1) {
-                title1.background = ContextCompat.getDrawable(this, R.color.yellow)
-                title2.background = ContextCompat.getDrawable(this, R.color.white)
-                title3.background = ContextCompat.getDrawable(this, R.color.white)
-                title4.background = ContextCompat.getDrawable(this, R.color.white)
-            } else if (btnNumber == 2) {
-                title1.background = ContextCompat.getDrawable(this, R.color.white)
-                title2.background = ContextCompat.getDrawable(this, R.color.yellow)
-                title3.background = ContextCompat.getDrawable(this, R.color.white)
-                title4.background = ContextCompat.getDrawable(this, R.color.white)
-            } else if (btnNumber == 3) {
-                title1.background = ContextCompat.getDrawable(this, R.color.white)
-                title2.background = ContextCompat.getDrawable(this, R.color.white)
-                title3.background = ContextCompat.getDrawable(this, R.color.yellow)
-                title4.background = ContextCompat.getDrawable(this, R.color.white)
-            } else if (btnNumber == 4) {
-                title1.background = ContextCompat.getDrawable(this, R.color.white)
-                title2.background = ContextCompat.getDrawable(this, R.color.white)
-                title3.background = ContextCompat.getDrawable(this, R.color.white)
-                title4.background = ContextCompat.getDrawable(this, R.color.yellow)
-            } else {
-                title1.background = ContextCompat.getDrawable(this, R.color.white)
-                title2.background = ContextCompat.getDrawable(this, R.color.white)
-                title3.background = ContextCompat.getDrawable(this, R.color.white)
-                title4.background = ContextCompat.getDrawable(this, R.color.white)
+        } else {
+            val layoutManager = GridLayoutManager(this, 2)
+            recyclerFilm.layoutManager = layoutManager
+        }
+
+        recyclerFilm.adapter = FilmAdapter(DataRepository.films, object : FilmAdapter.FilmClickListener {
+            override fun onFilmClick(filmItem: FilmItem){
+
+                DataRepository.films.forEach {
+                      if (it == filmItem) {it.isSelected = true}
+                      else {it.isSelected = false}
+                }
+
+                recyclerFilm.adapter?.notifyDataSetChanged()
+
+                val intent = Intent(applicationContext, FilmDescription::class.java)
+
+                intent.putExtra(FilmDescription.FILM_NUMBER, DataRepository.films.indexOf(filmItem))
+                startActivity(intent)
             }
-        }
+
+            override fun onFavoriteClick(filmItem: FilmItem){
+                if (!DataRepository.favourites.contains(filmItem)) {
+                    DataRepository.favourites.add(filmItem)
+                    filmItem.isFavorite = true
+                    recyclerFilm.adapter?.notifyItemChanged(DataRepository.films.indexOf(filmItem))
+                } else {
+                    DataRepository.favourites.remove(filmItem)
+                    filmItem.isFavorite = false
+                    recyclerFilm.adapter?.notifyItemChanged(DataRepository.films.indexOf(filmItem))
+                }
+            }
+        })
+    }
+
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this).apply {
+            setTitle("Подтверждение")
+            setMessage("Вы уверены, что хотите выйти из программы?")
+
+            setPositiveButton("Да") { dialogInterface: DialogInterface, i: Int ->
+                super.onBackPressed()
+            }
+            setNegativeButton("Нет") { dialogInterface: DialogInterface, i: Int -> }
+
+            setCancelable(true)
+        }.create().show()
     }
 }

@@ -6,7 +6,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class FilmItem(
     val filmTitle: String,
-    val filmDetail: String,
+    val filmDetails: String,
     val filmImage: Int,
     var isSelected: Boolean,
     var isFavorite: Boolean

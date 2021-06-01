@@ -3,7 +3,6 @@ package ru.ikorulev.homework
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,23 +11,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 
-class FilmDetailFragment : Fragment() {
+class FilmDetailsFragment : Fragment() {
     companion object {
-        const val TAG = "FilmDetailFragment"
-        const val FILM_NUMBER = "FILM_NUMBER"
-
-        fun newInstance(filmNumber: Int): FilmDetailFragment {
-            val args = Bundle()
-            args.putInt(FILM_NUMBER, filmNumber)
-
-            val fragment = FilmDetailFragment()
-            fragment.arguments = args
-            return fragment
-        }
+        const val TAG = "FilmDetailsFragment"
     }
 
     val img by lazy {view?.findViewById<ImageView>(R.id.img)}
-    val detail by lazy {view?.findViewById<TextView>(R.id.detail)}
+    val details by lazy {view?.findViewById<TextView>(R.id.details)}
     val btnInvite by lazy {view?.findViewById<Button>(R.id.btnInvite)}
 
     override fun onCreateView(
@@ -36,15 +25,18 @@ class FilmDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "onCreateView")
-        return inflater.inflate(R.layout.fragment_detail, container, false)
+        return inflater.inflate(R.layout.fragment_details, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(TAG, "onViewCreated")
-        val filmItem = DataRepository.films[arguments?.getInt(FILM_NUMBER) ?: 0]
+        var filmItem = DataRepository.films[0]
+        DataRepository.films.forEach {
+            if (it.isSelected)
+                filmItem = it
+        }
+
         img?.setImageResource(filmItem.filmImage)
-        detail?.text = filmItem.filmDetail
+        details?.text = filmItem.filmDetails
 
         btnInvite?.setOnClickListener(){
             val intent = Intent(Intent.ACTION_SEND)

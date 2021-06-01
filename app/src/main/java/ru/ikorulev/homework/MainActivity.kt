@@ -4,14 +4,13 @@ import android.content.DialogInterface
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.ikorulev.homework.Favourites.FavouritesFragment
-import kotlin.math.max
 
-class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailClickListener {
+class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickListener {
     companion object {
         private const val FILM_NUMBER = "FILM_NUMBER"
-        var filmNumber = -1
         var navItem = R.id.nav_list
     }
 
@@ -27,18 +26,16 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailClickList
 
     private fun initBottomNavigation() {
         BottomNavigation = findViewById(R.id.filmNavigation)
-        BottomNavigation.setOnNavigationItemReselectedListener { false }
-        BottomNavigation.setOnNavigationItemSelectedListener {item ->
+        BottomNavigation.setOnNavigationItemReselectedListener { true }
+        BottomNavigation.setOnNavigationItemSelectedListener { item ->
             navItem = item.itemId
-
-            while (supportFragmentManager.backStackEntryCount > 0){
-                supportFragmentManager.popBackStackImmediate()
+            //при переходе в начало очищаем стек
+            if (navItem == R.id.nav_list) {
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
-
             openFragmet()
             true
         }
-
     }
 
     private fun openFragmet() {
@@ -47,7 +44,7 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailClickList
                 openFilmList()
             }
             R.id.nav_detail -> {
-                openFilmDetail()
+                openFilmDetails()
             }
             R.id.nav_favourites -> {
                 openFavourites()
@@ -58,56 +55,100 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailClickList
     private fun openFilmList() {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragmentContainer,  FilmListFragment(), FilmListFragment.TAG)
+            .replace(
+                R.id.fragmentContainer,
+                FilmListFragment(),
+                FilmListFragment.TAG
+            )
             .commit()
     }
 
-    private fun openFilmDetail() {
+    private fun openFilmDetails() {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragmentContainer, FilmDetailFragment.newInstance(max(filmNumber,0)), FilmDetailFragment.TAG)
-            //.addToBackStack("FilmDetail")
+            .replace(
+                R.id.fragmentContainer,
+                FilmDetailsFragment(),
+                FilmDetailsFragment.TAG
+            )
+            .addToBackStack("FilmDetails")
             .commit()
     }
 
     private fun openFavourites() {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.fragmentContainer,  FavouritesFragment(), FavouritesFragment.TAG)
+            .replace(
+                R.id.fragmentContainer,
+                FavouritesFragment(),
+                FavouritesFragment.TAG)
+            .addToBackStack("FilmFavourites")
             .commit()
     }
 
-    override fun onFilmDescriptionClick(filmItem: FilmItem) {
+    override fun onFilmDetailsClick(filmItem: FilmItem) {
         DataRepository.films.forEach {
-            if (it == filmItem) {it.isSelected = true}
-            else {it.isSelected = false}
+            it.isSelected = it == filmItem
         }
 
-        filmNumber = DataRepository.films.indexOf(filmItem)
         navItem = R.id.nav_detail
-        BottomNavigation.selectedItemId = R.id.nav_detail
+        BottomNavigation.selectedItemId = navItem
+        openFilmDetails()
 
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.fragmentContainer, FilmDetailFragment.newInstance(filmNumber), FilmDetailFragment.TAG)
-            .addToBackStack("FilmDescription")
-            .commit()
     }
 
     private fun initFilms() {
         if (DataRepository.films.isEmpty()) {
-            DataRepository.films.add(FilmItem(getString(R.string.title1), getString(R.string.detail1), R.drawable.img1,false, false))
-            DataRepository.films.add(FilmItem( getString(R.string.title2), getString(R.string.detail2), R.drawable.img2,false, false))
-            DataRepository.films.add(FilmItem( getString(R.string.title3), getString(R.string.detail3), R.drawable.img3,false, false))
-            DataRepository.films.add(FilmItem( getString(R.string.title4), getString(R.string.detail4), R.drawable.img4,false, false))
+            DataRepository.films.add(
+                FilmItem(
+                    getString(R.string.title1),
+                    getString(R.string.detail1),
+                    R.drawable.img1,
+                    false,
+                    false
+                )
+            )
+            DataRepository.films.add(
+                FilmItem(
+                    getString(R.string.title2),
+                    getString(R.string.detail2),
+                    R.drawable.img2,
+                    false,
+                    false
+                )
+            )
+            DataRepository.films.add(
+                FilmItem(
+                    getString(R.string.title3),
+                    getString(R.string.detail3),
+                    R.drawable.img3,
+                    false,
+                    false
+                )
+            )
+            DataRepository.films.add(
+                FilmItem(
+                    getString(R.string.title4),
+                    getString(R.string.detail4),
+                    R.drawable.img4,
+                    false,
+                    false
+                )
+            )
         }
     }
 
 
     override fun onBackPressed() {
-
         if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack()
+            if (navItem != R.id.nav_list) {
+                supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                navItem = R.id.nav_list
+                BottomNavigation.selectedItemId = navItem
+                openFragmet()
+            } else {
+                supportFragmentManager.popBackStack()
+            }
         } else {
             AlertDialog.Builder(this).apply {
                 setTitle("Подтверждение")

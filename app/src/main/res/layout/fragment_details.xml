@@ -50,13 +50,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="left"
+            android:gravity="start"
             android:orientation="vertical"
             android:padding="20dp">
 
 
             <TextView
-                android:id="@+id/detail"
+                android:id="@+id/details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/hello"

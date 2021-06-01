@@ -2,7 +2,6 @@ package ru.ikorulev.homework
 
 import android.content.res.Configuration
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,20 +27,17 @@ class FilmListFragment:Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "onCreateView")
         return inflater.inflate(R.layout.fragment_list, container, false)
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d(TAG, "onViewCreated")
 
         val recyclerFilm = view.findViewById<RecyclerView>(R.id.recyclerFilm)
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
             val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             recyclerFilm.layoutManager = layoutManager
-
         } else {
             val layoutManager = GridLayoutManager(requireContext(), 2)
             recyclerFilm.layoutManager = layoutManager
@@ -50,9 +46,7 @@ class FilmListFragment:Fragment() {
         recyclerFilm.adapter = FilmAdapter(
             DataRepository.films, object : FilmAdapter.FilmClickListener {
                 override fun onFilmClick(filmItem: FilmItem){
-
-                    (activity as? OnFilmDetailClickListener)?.onFilmDescriptionClick(filmItem)
-
+                    (activity as? OnFilmDetailsClickListener)?.onFilmDetailsClick(filmItem)
                 }
 
                 override fun onFavoriteClick(filmItem: FilmItem){
@@ -82,8 +76,8 @@ class FilmListFragment:Fragment() {
         )
     }
 
-    interface OnFilmDetailClickListener {
-        fun onFilmDescriptionClick(filmItem: FilmItem)
+    interface OnFilmDetailsClickListener {
+        fun onFilmDetailsClick(filmItem: FilmItem)
     }
 
 }

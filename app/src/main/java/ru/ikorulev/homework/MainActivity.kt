@@ -10,7 +10,6 @@ import ru.ikorulev.homework.Favourites.FavouritesFragment
 
 class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickListener {
     companion object {
-        private const val FILM_NUMBER = "FILM_NUMBER"
         var navItem = R.id.nav_list
     }
 

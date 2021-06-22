@@ -1,4 +1,4 @@
-package ru.ikorulev.homework
+package ru.ikorulev.homework.presentation.view.film
 
 import android.graphics.Color
 import android.view.View
@@ -6,6 +6,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+//import kotlinx.android.extensions.LayoutContainer
+//import kotlinx.android.synthetic.main.item_main.*
+
+import ru.ikorulev.homework.R
+import ru.ikorulev.homework.data.FilmItem
 
 
 class FilmVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -29,7 +35,12 @@ class FilmVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
             filmTitle.setBackgroundColor(Color.WHITE)
         }
 
-        filmImage.setImageResource(item.filmImage)
+        Glide.with(filmImage.context)
+            .load("https://image.tmdb.org/t/p/w342${item.filmImage}")
+            .placeholder(R.drawable.ic_image)
+            .error(R.drawable.ic_error)
+            .into(filmImage)
+        //filmImage.setImageResource(item.filmImage)
     }
 }
 

@@ -1,26 +1,43 @@
-package ru.ikorulev.homework
+package ru.ikorulev.homework.presentation.view
 
 import android.content.DialogInterface
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import ru.ikorulev.homework.Favourites.FavouritesFragment
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import ru.ikorulev.homework.App
+import ru.ikorulev.homework.R
+import ru.ikorulev.homework.data.FilmItem
+import ru.ikorulev.homework.data.FilmsRepository
+import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
+
 
 class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickListener {
     companion object {
+        private const val FILM_NUMBER = "FILM_NUMBER"
         var navItem = R.id.nav_list
     }
 
     private lateinit var BottomNavigation: BottomNavigationView
 
+    private val viewModel: FilmViewModel by viewModels()
+
+    //////test
+    val items = mutableListOf<FilmItem>()
+    var filmsRepository = FilmsRepository()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initBottomNavigation()
-        initFilms()
         openFragmet()
+
+
     }
 
     private fun initBottomNavigation() {
@@ -80,63 +97,17 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
             .replace(
                 R.id.fragmentContainer,
                 FavouritesFragment(),
-                FavouritesFragment.TAG)
+                FavouritesFragment.TAG
+            )
             .addToBackStack("FilmFavourites")
             .commit()
     }
 
     override fun onFilmDetailsClick(filmItem: FilmItem) {
-        DataRepository.films.forEach {
-            it.isSelected = it == filmItem
-        }
-
         navItem = R.id.nav_detail
         BottomNavigation.selectedItemId = navItem
         openFilmDetails()
-
     }
-
-    private fun initFilms() {
-        if (DataRepository.films.isEmpty()) {
-            DataRepository.films.add(
-                FilmItem(
-                    getString(R.string.title1),
-                    getString(R.string.detail1),
-                    R.drawable.img1,
-                    false,
-                    false
-                )
-            )
-            DataRepository.films.add(
-                FilmItem(
-                    getString(R.string.title2),
-                    getString(R.string.detail2),
-                    R.drawable.img2,
-                    false,
-                    false
-                )
-            )
-            DataRepository.films.add(
-                FilmItem(
-                    getString(R.string.title3),
-                    getString(R.string.detail3),
-                    R.drawable.img3,
-                    false,
-                    false
-                )
-            )
-            DataRepository.films.add(
-                FilmItem(
-                    getString(R.string.title4),
-                    getString(R.string.detail4),
-                    R.drawable.img4,
-                    false,
-                    false
-                )
-            )
-        }
-    }
-
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {

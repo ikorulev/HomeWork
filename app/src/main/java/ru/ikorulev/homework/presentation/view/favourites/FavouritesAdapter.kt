@@ -1,12 +1,22 @@
-package ru.ikorulev.homework.Favourites
+package ru.ikorulev.homework.presentation.view.favourites
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.ikorulev.homework.FilmItem
+import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.R
+import java.util.ArrayList
 
-class FavouritesAdapter (private val items: List <FilmItem>) : RecyclerView.Adapter<FavouritesVH>() {
+class FavouritesAdapter () : RecyclerView.Adapter<FavouritesVH>() {
+
+    private val items = ArrayList<FilmItem>()
+
+    fun setItems(films: List<FilmItem>) {
+        items.clear()
+        items.addAll(films)
+
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouritesVH {
         val inflater = LayoutInflater.from(parent.context)

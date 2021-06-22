@@ -31,10 +31,11 @@
 
     <TextView
         android:id="@+id/filmTitle"
-        style="@android:style/TextAppearance.Large"
-        android:layout_width="wrap_content"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:gravity="start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/filmButton"
         app:layout_constraintStart_toEndOf="@id/filmFavourites"
@@ -43,12 +44,13 @@
 
     <Button
         android:id="@+id/filmButton"
-        style="@android:style/TextAppearance.Large"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
         android:textColor="@color/white"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/detail"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/filmTitle"

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/favoriteImage"
+        android:id="@+id/favouritesImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="@string/filmImage"

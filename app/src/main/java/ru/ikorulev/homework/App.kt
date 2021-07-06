@@ -3,7 +3,7 @@ package ru.ikorulev.homework
 import android.app.Application
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.ikorulev.homework.data.FilmsRepository
+import ru.ikorulev.homework.data.Db
 import ru.ikorulev.homework.data.TMDbService
 import ru.ikorulev.homework.domain.Interactor
 
@@ -14,12 +14,11 @@ class App : Application() {
         lateinit var instance: App
             private set
     }
+
     lateinit var tmDbService: TMDbService
-
     lateinit var interactor: Interactor
-    var filmsRepository = FilmsRepository()
 
-    override fun onCreate() {
+        override fun onCreate() {
         super.onCreate()
 
 
@@ -27,10 +26,11 @@ class App : Application() {
 
         initRetrofit()
         initInteractor()
+        initRoom()
     }
 
     private fun initInteractor() {
-        interactor = Interactor(tmDbService, filmsRepository)
+        interactor = Interactor(tmDbService)
     }
 
     private fun initRetrofit() {
@@ -42,4 +42,12 @@ class App : Application() {
 
         tmDbService = retrofit.create(TMDbService::class.java)
     }
+
+    private fun initRoom() {
+
+        Db.getInstance(this)?.getFilmDao()?.deleteAll()
+        Db.getInstance(this)?.getFavouritesDao()?.deleteAll()
+
+    }
+
 }

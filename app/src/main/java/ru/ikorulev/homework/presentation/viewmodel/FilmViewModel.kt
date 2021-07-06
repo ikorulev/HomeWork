@@ -1,20 +1,22 @@
 package ru.ikorulev.homework.presentation.viewmodel
 
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.*
 import ru.ikorulev.homework.App
+import ru.ikorulev.homework.data.FilmDb
 import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.domain.Interactor
 
-class FilmViewModel  : ViewModel(){
+class FilmViewModel(application: Application)  : AndroidViewModel(application){
 
     private val interactor = App.instance.interactor
 
     private val mFilms = MutableLiveData<List<FilmItem>>()
     private val mFavourites = MutableLiveData<MutableList<FilmItem>>()
     private val mError = MutableLiveData<String>()
+
+    private val filmItems = mutableListOf<FilmItem>()
 
     val films: LiveData<List<FilmItem>> = mFilms
     val favourites: LiveData<MutableList<FilmItem>> = mFavourites
@@ -24,10 +26,21 @@ class FilmViewModel  : ViewModel(){
     //val films = mutableListOf<FilmItem>()
     //val favourites = mutableListOf<FilmItem>()
 
-    fun getFilms(){
-        interactor.getFilms(object : Interactor.GetFilmCallback {
-            override fun onSuccess(films: List<FilmItem>) {
-                mFilms.value = films
+    fun loadFilms(page: Int = 1){
+        interactor.loadFilms(page, object : Interactor.GetFilmCallback {
+            override fun onSuccess(filmsDb: List<FilmDb>?) {
+                filmItems.clear()
+                filmsDb?.forEach{
+                    filmItems.add(
+                        FilmItem(
+                            //it.id,
+                            it.filmTitle,
+                            it.filmPath,
+                            it.filmDetails,
+                            false,
+                            false
+                        ))}
+                mFilms.value = filmItems
             }
 
             override fun onError(error: String) {
@@ -47,12 +60,17 @@ class FilmViewModel  : ViewModel(){
             mFavourites.value = mutableListOf<FilmItem>()
         }
         return if (!mFavourites.value!!.contains(filmItem)) {
-            mFavourites.value!!.add(filmItem)
+            interactor.insertFavourites(filmItem)
+            mFavourites.value=interactor.getFavourites()
+
             filmItem.isFavorite = true
+            interactor.updateFilm(filmItem)
             true
         } else {
+            interactor.deleteFavourites(filmItem)
             mFavourites.value!!.remove(filmItem)
             filmItem.isFavorite = false
+            interactor.updateFilm(filmItem)
             false
         }
     }

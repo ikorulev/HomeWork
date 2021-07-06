@@ -44,7 +44,7 @@ class FilmDetailsFragment : Fragment() {
         //filmItem?.filmImage?.let { img?.setImageResource(it) }
         val filmImage: ImageView = requireView().findViewById(R.id.filmImage)
         Glide.with(filmImage.context)
-            .load("https://image.tmdb.org/t/p/w342${filmItem?.filmImage}")
+            .load("https://image.tmdb.org/t/p/w342${filmItem?.filmPath}")
             .placeholder(R.drawable.ic_image)
             .error(R.drawable.ic_error)
             .into(filmImage)

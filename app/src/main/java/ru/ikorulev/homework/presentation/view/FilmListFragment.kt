@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,6 +22,9 @@ class FilmListFragment:Fragment() {
         const val TAG = "FilmListFragment"
     }
     private val viewModel: FilmViewModel by activityViewModels()
+    private var filmPage = 1
+
+    private lateinit var layoutManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,15 +38,13 @@ class FilmListFragment:Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val recyclerFilm = view.findViewById<RecyclerView>(R.id.recyclerFilm)
-
-        viewModel.getFilms()
-
+        viewModel.loadFilms()
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-            val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             recyclerFilm.layoutManager = layoutManager
         } else {
-            val layoutManager = GridLayoutManager(requireContext(), 2)
+            layoutManager = GridLayoutManager(requireContext(), 2)
             recyclerFilm.layoutManager = layoutManager
         }
 
@@ -68,6 +68,15 @@ class FilmListFragment:Fragment() {
             }
         })
         recyclerFilm.adapter = adapter
+        recyclerFilm.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount*0.7) {
+                    filmPage++
+                    viewModel.loadFilms(filmPage)
+                }
+            }
+        })
+
 
         viewModel.films.observe(viewLifecycleOwner, { films ->
             adapter.setItems(films)

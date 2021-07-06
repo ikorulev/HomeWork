@@ -36,7 +36,7 @@ class FilmVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         Glide.with(filmImage.context)
-            .load("https://image.tmdb.org/t/p/w342${item.filmImage}")
+            .load("https://image.tmdb.org/t/p/w342${item.filmPath}")
             .placeholder(R.drawable.ic_image)
             .error(R.drawable.ic_error)
             .into(filmImage)

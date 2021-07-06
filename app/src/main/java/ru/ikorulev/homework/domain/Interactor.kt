@@ -4,19 +4,18 @@ import android.util.Log
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import ru.ikorulev.homework.data.FilmItem
-import ru.ikorulev.homework.data.FilmsRepository
-import ru.ikorulev.homework.data.GetFilmsResults
-import ru.ikorulev.homework.data.TMDbService
+import ru.ikorulev.homework.App
+import ru.ikorulev.homework.data.*
 
 class Interactor(
-    private val tmDbService: TMDbService,
-    private val filmsRepository: FilmsRepository
-) {
-    var items = mutableListOf<FilmItem>()
 
-    fun getFilms(callback: GetFilmCallback) {
-        tmDbService.getPopularFilms()
+    private val tmDbService: TMDbService
+
+) {
+    var itemsFilms = mutableListOf<FilmDb>()
+
+    fun loadFilms(page: Int, callback: GetFilmCallback) {
+        tmDbService.getPopularFilms(page = page)
             .enqueue(object : Callback<GetFilmsResults> {
                 override fun onFailure(call: Call<GetFilmsResults>, t: Throwable) {
                     Log.d("Interactor", "onFailure")
@@ -26,45 +25,66 @@ class Interactor(
                     call: Call<GetFilmsResults>,
                     response: Response<GetFilmsResults>
                 ) {
+
                     Log.d("Interactor", "onResponse")
-                    items.clear()
+                    itemsFilms.clear()
                     if (response.isSuccessful) {
                         response.body()?.movies?.forEach {
-                            /*Log.d("Interactor", it.filmTitle)
-                            Log.d("Interactor", it.filmImage)
-                            Log.d("Interactor", it.filmDetails)*/
-
                             if (it.filmTitle != null && it.filmTitle.isNotEmpty()
-                                && it.filmImage != null && it.filmImage.isNotEmpty()
+                                && it.filmPath != null && it.filmPath.isNotEmpty()
                                 && it.filmDetails != null && it.filmDetails.isNotEmpty()
                             ) {
-
-                                items.add(
-                                    FilmItem(
+                                itemsFilms.add(
+                                    FilmDb(
                                         //it.id,
                                         it.filmTitle,
-                                        it.filmImage,
-                                        it.filmDetails,
-
-                                        false,
-                                        false
+                                        it.filmPath,
+                                        it.filmDetails
                                     )
                                 )
                             }
                         }
                     }
-                    Log.d("Interactor", "")
-                    filmsRepository.addToCache(items.toList())
 
-                    callback.onSuccess(filmsRepository.cachedFilms)
+                    Db.getInstance(App.instance.applicationContext)
+                        ?.getFilmDao()?.insert(itemsFilms.toList())
+                    callback.onSuccess(
+                        Db.getInstance(App.instance.applicationContext)
+                            ?.getFilmDao()?.getAll()
+
+                    )
                 }
             })
-
-
     }
 
     interface GetFilmCallback {
-        fun onSuccess(films: List<FilmItem>)
+        fun onSuccess(films: List<FilmDb>?)
         fun onError(error: String)
+    }
+
+    fun insertFavourites(filmItem: FilmItem) {
+        Db.getInstance(App.instance.applicationContext)
+            ?.getFavouritesDao()?.insert(FavouritesDb(filmItem.filmTitle, filmItem.filmPath))
+    }
+
+    fun deleteFavourites(filmItem: FilmItem) {
+        Db.getInstance(App.instance.applicationContext)
+            ?.getFavouritesDao()?.delete(FavouritesDb(filmItem.filmTitle, filmItem.filmPath))
+    }
+
+    fun getFavourites(): MutableList<FilmItem>? {
+        var items = mutableListOf<FilmItem>()
+        Db.getInstance(App.instance.applicationContext)
+            ?.getFavouritesDao()?.getAll()
+            ?.forEach { items.add(FilmItem(it.filmTitle, it.filmPath, "",false,false)) }
+        return items
+    }
+
+    fun updateFilm(filmItem: FilmItem) {
+        var filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.findByTitle(filmItem.filmTitle)
+        if (filmDb != null) {
+            filmDb.isFavorite = filmItem.isFavorite
+            Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.update(filmDb)
+        }
     }
 }

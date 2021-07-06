@@ -7,13 +7,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.ikorulev.homework.App
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
-import ru.ikorulev.homework.data.FilmsRepository
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 
 
@@ -29,7 +24,6 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
 
     //////test
     val items = mutableListOf<FilmItem>()
-    var filmsRepository = FilmsRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

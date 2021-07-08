@@ -1,4 +1,4 @@
-package ru.ikorulev.homework.data
+package ru.ikorulev.homework.data.tmdb
 
 import com.google.gson.annotations.SerializedName
 

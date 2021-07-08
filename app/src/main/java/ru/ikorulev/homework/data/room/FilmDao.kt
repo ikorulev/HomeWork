@@ -1,4 +1,4 @@
-package ru.ikorulev.homework.data
+package ru.ikorulev.homework.data.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
@@ -11,8 +11,11 @@ interface FilmDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(film: FilmDb?)
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    fun updateAll(film: List<FilmDb>)
+
     @Query("SELECT * FROM films")
-    fun getAll(): List<FilmDb>
+    fun getAll(): LiveData<List<FilmDb>>
 
     @Query("SELECT * FROM films WHERE title = :search")
     fun findByTitle(search: String?): FilmDb?

@@ -3,8 +3,8 @@ package ru.ikorulev.homework
 import android.app.Application
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.ikorulev.homework.data.Db
-import ru.ikorulev.homework.data.TMDbService
+import ru.ikorulev.homework.data.room.Db
+import ru.ikorulev.homework.data.tmdb.TMDbService
 import ru.ikorulev.homework.domain.Interactor
 
 class App : Application() {
@@ -20,7 +20,6 @@ class App : Application() {
 
         override fun onCreate() {
         super.onCreate()
-
 
         instance = this
 
@@ -44,10 +43,7 @@ class App : Application() {
     }
 
     private fun initRoom() {
-
-        Db.getInstance(this)?.getFilmDao()?.deleteAll()
-        Db.getInstance(this)?.getFavouritesDao()?.deleteAll()
-
+        Db.getInstance(this)?.getFilmDao()
+        Db.getInstance(this)?.getFavouritesDao()
     }
-
 }

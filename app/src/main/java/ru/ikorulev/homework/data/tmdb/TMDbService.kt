@@ -1,4 +1,4 @@
-package ru.ikorulev.homework.data
+package ru.ikorulev.homework.data.tmdb
 
 import retrofit2.Call
 import retrofit2.http.GET

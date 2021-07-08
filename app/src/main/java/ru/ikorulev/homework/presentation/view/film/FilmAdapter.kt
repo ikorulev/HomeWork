@@ -2,15 +2,13 @@ package ru.ikorulev.homework.presentation.view.film
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
-import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
-import java.util.ArrayList
+import java.util.*
 
 //class FilmAdapter (private val clickListener: FilmClickListener
-class FilmAdapter (private val clickListener: FilmClickListener) : RecyclerView.Adapter<FilmVH>() {
+class FilmAdapter(private val clickListener: FilmClickListener) : RecyclerView.Adapter<FilmVH>() {
 
     companion object {
         const val TAG = "FilmAdapter"
@@ -34,20 +32,16 @@ class FilmAdapter (private val clickListener: FilmClickListener) : RecyclerView.
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(holder: FilmVH, position: Int) {
-        //Log.d(TAG, "onBindViewHolder $position")
 
-        if (holder is FilmVH) {
-            val item = items[position]
-            holder.bind(item)
+        val item = items[position]
+        holder.bind(item)
 
-            holder.filmButton.setOnClickListener {
-                clickListener.onFilmClick(item)
-            }
+        holder.filmButton.setOnClickListener {
+            clickListener.onFilmClick(item)
+        }
 
-            holder.filmFavorite.setOnClickListener {
-                clickListener.onFavoriteClick(item)
-            }
-
+        holder.filmFavorite.setOnClickListener {
+            clickListener.onFavoriteClick(item)
         }
     }
 

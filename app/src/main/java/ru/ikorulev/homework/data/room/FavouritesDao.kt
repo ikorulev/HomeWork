@@ -1,5 +1,6 @@
-package ru.ikorulev.homework.data
+package ru.ikorulev.homework.data.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 
 @Dao
@@ -8,7 +9,10 @@ interface FavouritesDao {
     fun insert(favourite: FavouritesDb)
 
     @Query("SELECT * FROM favourites")
-    fun getAll(): List<FavouritesDb>
+    fun getAll(): LiveData<List<FavouritesDb>>
+
+    @Query("SELECT * FROM favourites WHERE title = :search")
+    fun findByTitle(search: String?): FavouritesDb?
 
     //@Query("SELECT * FROM image WHERE id IN (:arg0)")
     //fun findByIds(imageTestIds: List<Int>): List<FilmDb>

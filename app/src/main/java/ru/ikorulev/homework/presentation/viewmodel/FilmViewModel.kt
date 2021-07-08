@@ -4,73 +4,50 @@ package ru.ikorulev.homework.presentation.viewmodel
 import android.app.Application
 import androidx.lifecycle.*
 import ru.ikorulev.homework.App
-import ru.ikorulev.homework.data.FilmDb
+import ru.ikorulev.homework.data.room.FilmDb
 import ru.ikorulev.homework.data.FilmItem
-import ru.ikorulev.homework.domain.Interactor
+import ru.ikorulev.homework.data.room.Db
+import ru.ikorulev.homework.data.room.FavouritesDb
+import ru.ikorulev.homework.data.room.DataRepository
 
 class FilmViewModel(application: Application)  : AndroidViewModel(application){
 
     private val interactor = App.instance.interactor
+    private val repository: DataRepository
 
-    private val mFilms = MutableLiveData<List<FilmItem>>()
-    private val mFavourites = MutableLiveData<MutableList<FilmItem>>()
     private val mError = MutableLiveData<String>()
-
-    private val filmItems = mutableListOf<FilmItem>()
-
-    val films: LiveData<List<FilmItem>> = mFilms
-    val favourites: LiveData<MutableList<FilmItem>> = mFavourites
 
     val error: LiveData<String> = mError
 
-    //val films = mutableListOf<FilmItem>()
-    //val favourites = mutableListOf<FilmItem>()
+    val films: LiveData<List<FilmDb>>?
+    val favourites: LiveData<List<FavouritesDb>>?
+
+    init {
+        val filmDao = Db.getInstance(App.instance.applicationContext)?.getFilmDao()
+        val favouritesDao = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
+        repository = DataRepository(filmDao, favouritesDao)
+        films = repository.films
+        favourites = repository.favourites
+    }
 
     fun loadFilms(page: Int = 1){
-        interactor.loadFilms(page, object : Interactor.GetFilmCallback {
-            override fun onSuccess(filmsDb: List<FilmDb>?) {
-                filmItems.clear()
-                filmsDb?.forEach{
-                    filmItems.add(
-                        FilmItem(
-                            //it.id,
-                            it.filmTitle,
-                            it.filmPath,
-                            it.filmDetails,
-                            false,
-                            false
-                        ))}
-                mFilms.value = filmItems
-            }
-
-            override fun onError(error: String) {
-                mError.value = error
-            }
-        })
+        interactor.loadFilms(page)
     }
 
     fun onFilmClick(filmItem: FilmItem) {
-        mFilms.value?.forEach {
-            it.isSelected = it == filmItem
-        }
+        interactor.selectFilm(filmItem, films?.value)
     }
 
     fun onFavoriteClick(filmItem: FilmItem): Boolean {
-        if (mFavourites.value == null) {
-            mFavourites.value = mutableListOf<FilmItem>()
-        }
-        return if (!mFavourites.value!!.contains(filmItem)) {
+        return if (interactor.findFavourites(filmItem) == false) {
             interactor.insertFavourites(filmItem)
-            mFavourites.value=interactor.getFavourites()
-
             filmItem.isFavorite = true
-            interactor.updateFilm(filmItem)
+            interactor.updateFilmIsFavorite(filmItem)
             true
         } else {
             interactor.deleteFavourites(filmItem)
-            mFavourites.value!!.remove(filmItem)
             filmItem.isFavorite = false
-            interactor.updateFilm(filmItem)
+            interactor.updateFilmIsFavorite(filmItem)
             false
         }
     }

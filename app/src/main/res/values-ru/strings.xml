@@ -15,4 +15,5 @@
     <string name="filmImage">Изображение фильма</string>
     <string name="favourites">Избранное</string>
     <string name="list">Список</string>
+    <string name="download">Загрузить</string>
 </resources>

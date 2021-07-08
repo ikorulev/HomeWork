@@ -35,8 +35,8 @@ class FilmDetailsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        var filmItem = filmViewModel.films.value?.get(0)
-        filmViewModel.films.value?.forEach {
+        var filmItem = filmViewModel.films?.value?.get(0)
+        filmViewModel.films?.value?.forEach {
             if (it.isSelected)
                 filmItem = it
         }

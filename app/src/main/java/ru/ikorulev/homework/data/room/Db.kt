@@ -1,4 +1,4 @@
-package ru.ikorulev.homework.data
+package ru.ikorulev.homework.data.room
 
 import android.content.Context
 import androidx.room.Room

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import ru.ikorulev.homework.App
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
@@ -22,21 +23,15 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
 
     private val viewModel: FilmViewModel by viewModels()
 
-    //////test
-    val items = mutableListOf<FilmItem>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initBottomNavigation()
         openFragmet()
-
-
     }
 
     private fun initBottomNavigation() {
         BottomNavigation = findViewById(R.id.filmNavigation)
-        BottomNavigation.setOnNavigationItemReselectedListener { true }
         BottomNavigation.setOnNavigationItemSelectedListener { item ->
             navItem = item.itemId
             //при переходе в начало очищаем стек
@@ -53,8 +48,9 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
             R.id.nav_list -> {
                 openFilmList()
             }
-            R.id.nav_detail -> {
-                openFilmDetails()
+            R.id.nav_download -> {
+                App.instance.interactor.deleteFilms()
+                App.instance.interactor.loadFilms(1)
             }
             R.id.nav_favourites -> {
                 openFavourites()
@@ -98,8 +94,6 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
     }
 
     override fun onFilmDetailsClick(filmItem: FilmItem) {
-        navItem = R.id.nav_detail
-        BottomNavigation.selectedItemId = navItem
         openFilmDetails()
     }
 

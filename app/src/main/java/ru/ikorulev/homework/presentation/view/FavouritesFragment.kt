@@ -46,8 +46,20 @@ class FavouritesFragment : Fragment() {
 
         recyclerFavourites.adapter = adapter
 
-        viewModel.favourites.observe(viewLifecycleOwner, { favourites ->
-            adapter.setItems(favourites)
+        viewModel.favourites?.observe(viewLifecycleOwner, { favouritesDb ->
+            val favourites = mutableListOf<FilmItem>()
+            favouritesDb.forEach {
+                favourites.add(
+                    FilmItem(
+                        it.filmTitle,
+                        it.filmPath,
+                        "",
+                        false,
+                        false
+                    )
+                )
+                adapter.setItems(favourites)
+            }
         })
 
 

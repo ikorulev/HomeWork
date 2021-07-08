@@ -17,10 +17,11 @@ import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 
 
-class FilmListFragment:Fragment() {
+class FilmListFragment : Fragment() {
     companion object {
         const val TAG = "FilmListFragment"
     }
+
     private val viewModel: FilmViewModel by activityViewModels()
     private var filmPage = 1
 
@@ -38,10 +39,11 @@ class FilmListFragment:Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val recyclerFilm = view.findViewById<RecyclerView>(R.id.recyclerFilm)
-        viewModel.loadFilms()
+        //viewModel.loadFilms()
 
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             recyclerFilm.layoutManager = layoutManager
         } else {
             layoutManager = GridLayoutManager(requireContext(), 2)
@@ -55,22 +57,36 @@ class FilmListFragment:Fragment() {
             }
 
             override fun onFavoriteClick(filmItem: FilmItem) {
-                if (viewModel.onFavoriteClick(filmItem)==true) {
-                    Snackbar.make(view, "Фильм ${filmItem.filmTitle} успешно добавлен в избранное", Snackbar.LENGTH_SHORT)
+                if (viewModel.onFavoriteClick(filmItem) == true) {
+                    Snackbar.make(
+                        view,
+                        "Фильм ${filmItem.filmTitle} успешно добавлен в избранное",
+                        Snackbar.LENGTH_SHORT
+                    )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
                         .show()
                 } else {
-                    Snackbar.make(view, "Фильм ${filmItem.filmTitle} успешно удален из избранного", Snackbar.LENGTH_SHORT)
+                    Snackbar.make(
+                        view,
+                        "Фильм ${filmItem.filmTitle} успешно удален из избранного",
+                        Snackbar.LENGTH_SHORT
+                    )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
                         .show()
                 }
-                viewModel.films.value?.let { recyclerFilm?.adapter?.notifyItemChanged(it?.indexOf(filmItem)) }
+                viewModel.films?.value?.let {
+                    recyclerFilm?.adapter?.notifyItemChanged(
+                        it.indexOf(
+                            filmItem
+                        )
+                    )
+                }
             }
         })
         recyclerFilm.adapter = adapter
-        recyclerFilm.addOnScrollListener(object: RecyclerView.OnScrollListener(){
+        recyclerFilm.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount*0.7) {
+                if (layoutManager.findLastVisibleItemPosition() >= layoutManager.itemCount * 0.7) {
                     filmPage++
                     viewModel.loadFilms(filmPage)
                 }
@@ -78,7 +94,19 @@ class FilmListFragment:Fragment() {
         })
 
 
-        viewModel.films.observe(viewLifecycleOwner, { films ->
+        viewModel.films?.observe(viewLifecycleOwner, { filmsDb ->
+            val films = mutableListOf<FilmItem>()
+            filmsDb.forEach {
+                films.add(
+                    FilmItem(
+                        it.filmTitle,
+                        it.filmPath,
+                        it.filmDetails,
+                        it.isSelected,
+                        it.isFavorite
+                    )
+                )
+            }
             adapter.setItems(films)
         })
 

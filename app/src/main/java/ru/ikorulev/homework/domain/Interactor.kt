@@ -1,20 +1,20 @@
 package ru.ikorulev.homework.domain
 
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
+import android.content.DialogInterface
 import android.util.Log
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.LiveData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.ikorulev.homework.App
+import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.*
-import ru.ikorulev.homework.data.room.DataRepository
 import ru.ikorulev.homework.data.room.Db
 import ru.ikorulev.homework.data.room.FavouritesDb
 import ru.ikorulev.homework.data.room.FilmDb
 import ru.ikorulev.homework.data.tmdb.GetFilmsResults
 import ru.ikorulev.homework.data.tmdb.TMDbService
-import java.io.ByteArrayOutputStream
 
 class Interactor(
 
@@ -22,16 +22,18 @@ class Interactor(
 
 ) {
     //Films
-    fun deleteFilms(){
+    fun deleteAllFilms(){
         Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.deleteAll()
     }
 
-    fun loadFilms(page: Int) {
+    fun loadFilms(page: Int, callback: GetFilmCallback) {
         val filmDb = mutableListOf<FilmDb>()
         tmDbService.getPopularFilms(page = page)
             .enqueue(object : Callback<GetFilmsResults> {
                 override fun onFailure(call: Call<GetFilmsResults>, t: Throwable) {
-                    Log.d("Interactor", "onFailure")
+                    callback.onError(
+                        App.instance.applicationContext.getString(R.string.Error)
+                    )
                 }
 
                 override fun onResponse(
@@ -65,6 +67,11 @@ class Interactor(
             })
     }
 
+    interface GetFilmCallback {
+        fun onError(error: String)
+    }
+
+
     fun updateFilmIsFavorite(filmItem: FilmItem) {
         val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.findByTitle(filmItem.filmTitle)
         if (filmDb != null) {
@@ -80,6 +87,11 @@ class Interactor(
             }
             Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.updateAll(filmDb.toList())
         }
+    }
+
+    fun findFilmDb(filmItem: FilmItem): FilmDb? {
+        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.findByTitle(filmItem.filmTitle)
+        return filmDb
     }
 
     //Favourites
@@ -100,7 +112,9 @@ class Interactor(
         }
     }
 
-
+    fun deleteAllFavourites(){
+        Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.deleteAll()
+    }
 
 
 }

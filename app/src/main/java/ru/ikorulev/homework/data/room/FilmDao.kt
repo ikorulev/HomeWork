@@ -5,7 +5,7 @@ import androidx.room.*
 
 @Dao
 interface FilmDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(film: List<FilmDb>)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)

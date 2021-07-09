@@ -9,18 +9,25 @@ import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.data.room.Db
 import ru.ikorulev.homework.data.room.FavouritesDb
 import ru.ikorulev.homework.data.room.DataRepository
+import ru.ikorulev.homework.domain.Interactor
 
 class FilmViewModel(application: Application)  : AndroidViewModel(application){
 
     private val interactor = App.instance.interactor
     private val repository: DataRepository
 
-    private val mError = MutableLiveData<String>()
-
-    val error: LiveData<String> = mError
+    private val mSelectedFilm = MutableLiveData<FilmItem>()
+    private val mErrors = MutableLiveData<String>()
 
     val films: LiveData<List<FilmDb>>?
     val favourites: LiveData<List<FavouritesDb>>?
+
+    val selectedFilms: LiveData<FilmItem>
+        get() = mSelectedFilm
+
+    val errors: LiveData<String>
+        get() = mErrors
+
 
     init {
         val filmDao = Db.getInstance(App.instance.applicationContext)?.getFilmDao()
@@ -31,10 +38,15 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
     }
 
     fun loadFilms(page: Int = 1){
-        interactor.loadFilms(page)
+        interactor.loadFilms(page, object : Interactor.GetFilmCallback {
+            override fun onError(error: String) {
+                mErrors.value = error
+            }
+        })
     }
 
     fun onFilmClick(filmItem: FilmItem) {
+        mSelectedFilm.value = filmItem
         interactor.selectFilm(filmItem, films?.value)
     }
 
@@ -51,4 +63,18 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
             false
         }
     }
+
+    fun indexOfFilm(filmItem: FilmItem): Int {
+        val filmDb = interactor.findFilmDb(filmItem)
+        if (filmDb!=null) {
+            return films?.value!!.indexOf(filmDb)
+        } else{
+            return 0
+        }
+    }
+
+    fun clearError(){
+        mErrors.value = ""
+    }
+
 }

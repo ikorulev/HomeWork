@@ -1,19 +1,21 @@
 package ru.ikorulev.homework.presentation.view
 
+import android.content.DialogInterface
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import ru.ikorulev.homework.presentation.view.film.FilmAdapter
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
+import ru.ikorulev.homework.presentation.view.film.FilmAdapter
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 
 
@@ -39,7 +41,6 @@ class FilmListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         val recyclerFilm = view.findViewById<RecyclerView>(R.id.recyclerFilm)
-        //viewModel.loadFilms()
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             layoutManager =
@@ -76,9 +77,7 @@ class FilmListFragment : Fragment() {
                 }
                 viewModel.films?.value?.let {
                     recyclerFilm?.adapter?.notifyItemChanged(
-                        it.indexOf(
-                            filmItem
-                        )
+                        viewModel.indexOfFilm(filmItem)
                     )
                 }
             }
@@ -108,6 +107,23 @@ class FilmListFragment : Fragment() {
                 )
             }
             adapter.setItems(films)
+        })
+
+        viewModel.errors.observe(viewLifecycleOwner, { error ->
+            if (error.length > 0) {
+                AlertDialog.Builder(requireContext()).apply {
+                    setTitle(error)
+                    setMessage(getString(R.string.Retry))
+
+                    setPositiveButton("Да") { dialogInterface: DialogInterface, i: Int ->
+                        viewModel.loadFilms()
+                    }
+                    setNegativeButton("Нет") { dialogInterface: DialogInterface, i: Int -> }
+
+                    setCancelable(true)
+                }.create().show()
+                viewModel.clearError()
+            }
         })
 
     }

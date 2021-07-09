@@ -48,12 +48,15 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
             R.id.nav_list -> {
                 openFilmList()
             }
-            R.id.nav_download -> {
-                App.instance.interactor.deleteFilms()
-                App.instance.interactor.loadFilms(1)
-            }
             R.id.nav_favourites -> {
                 openFavourites()
+            }
+            R.id.nav_download -> {
+                viewModel.loadFilms()
+            }
+            R.id.nav_clear -> {
+                App.instance.interactor.deleteAllFilms()
+                App.instance.interactor.deleteAllFavourites()
             }
         }
     }

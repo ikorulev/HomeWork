@@ -19,4 +19,7 @@
     <string name="favourites">Favourites</string>
     <string name="list">List</string>
     <string name="download">Download</string>
+    <string name="Error">Loading error</string>
+    <string name="Retry">Retry the download?</string>
+    <string name="Clear">Clear tables</string>
 </resources>

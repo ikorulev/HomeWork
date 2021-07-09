@@ -16,4 +16,7 @@
     <string name="favourites">Избранное</string>
     <string name="list">Список</string>
     <string name="download">Загрузить</string>
+    <string name="Error">Ошибка загрузки</string>
+    <string name="Retry">Повторить загрузку?</string>
+    <string name="Clear">Очистить таблицы</string>
 </resources>

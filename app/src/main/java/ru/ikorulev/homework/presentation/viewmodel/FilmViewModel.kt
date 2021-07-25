@@ -16,6 +16,15 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
     private val interactor = App.instance.interactor
     private val repository: DataRepository
 
+    private val mFilms = MutableLiveData<List<FilmItem>>()
+    val filmItems: LiveData<List<FilmItem>>
+        get() = mFilms
+
+    private val mFavourites = MutableLiveData<List<FilmItem>>()
+    val favouriteItems: LiveData<List<FilmItem>>
+        get() = mFavourites
+
+
     private val mSelectedFilm = MutableLiveData<FilmItem>()
     private val mErrors = MutableLiveData<String>()
 
@@ -37,12 +46,52 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
         favourites = repository.favourites
     }
 
+    fun initFilms(){
+        if (interactor.isEmpty()) {
+            loadFilms(1)
+        }
+    }
+
     fun loadFilms(page: Int = 1){
         interactor.loadFilms(page, object : Interactor.GetFilmCallback {
             override fun onError(error: String) {
                 mErrors.value = error
             }
         })
+    }
+
+    fun loadFilmItems(filmsDb: List<FilmDb>) {
+
+        val items = mutableListOf<FilmItem>()
+        filmsDb.forEach {
+            items.add(
+                FilmItem(
+                    it.filmTitle,
+                    it.filmPath,
+                    it.filmDetails,
+                    it.isSelected,
+                    it.isFavorite
+                )
+            )
+        }
+        mFilms.value = items
+    }
+
+    fun loadFavouriteItems(favouritesDb: List<FavouritesDb>) {
+
+        val items = mutableListOf<FilmItem>()
+        favouritesDb.forEach {
+            items.add(
+                FilmItem(
+                    it.filmTitle,
+                    it.filmPath,
+                    "",
+                    false,
+                    false
+                )
+            )
+        }
+        mFavourites.value = items
     }
 
     fun onFilmClick(filmItem: FilmItem) {

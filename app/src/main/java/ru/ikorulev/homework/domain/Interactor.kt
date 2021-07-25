@@ -22,6 +22,10 @@ class Interactor(
 
 ) {
     //Films
+    fun isEmpty(): Boolean{
+        return Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.getAll()?.value==null
+    }
+
     fun deleteAllFilms(){
         Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.deleteAll()
     }
@@ -115,6 +119,5 @@ class Interactor(
     fun deleteAllFavourites(){
         Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.deleteAll()
     }
-
 
 }

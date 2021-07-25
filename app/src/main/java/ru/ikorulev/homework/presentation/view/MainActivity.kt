@@ -27,7 +27,8 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initBottomNavigation()
-        openFragmet()
+        viewModel.initFilms()
+        openFragment()
     }
 
     private fun initBottomNavigation() {
@@ -38,12 +39,12 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
             if (navItem == R.id.nav_list) {
                 supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
-            openFragmet()
+            openFragment()
             true
         }
     }
 
-    private fun openFragmet() {
+    private fun openFragment() {
         when (navItem) {
             R.id.nav_list -> {
                 openFilmList()
@@ -106,7 +107,7 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
                 supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 navItem = R.id.nav_list
                 BottomNavigation.selectedItemId = navItem
-                openFragmet()
+                openFragment()
             } else {
                 supportFragmentManager.popBackStack()
             }

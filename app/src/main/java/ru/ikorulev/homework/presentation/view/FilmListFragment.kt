@@ -92,20 +92,11 @@ class FilmListFragment : Fragment() {
             }
         })
 
-
         viewModel.films?.observe(viewLifecycleOwner, { filmsDb ->
-            val films = mutableListOf<FilmItem>()
-            filmsDb.forEach {
-                films.add(
-                    FilmItem(
-                        it.filmTitle,
-                        it.filmPath,
-                        it.filmDetails,
-                        it.isSelected,
-                        it.isFavorite
-                    )
-                )
-            }
+            viewModel.loadFilmItems(filmsDb)
+        })
+
+        viewModel.filmItems.observe(viewLifecycleOwner, { films ->
             adapter.setItems(films)
         })
 

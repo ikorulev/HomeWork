@@ -2,6 +2,7 @@ package ru.ikorulev.homework.data.room
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavouritesDao {
@@ -9,7 +10,7 @@ interface FavouritesDao {
     fun insert(favourite: FavouritesDb)
 
     @Query("SELECT * FROM favourites")
-    fun getAll(): LiveData<List<FavouritesDb>>
+    fun getAll(): Flow<List<FavouritesDb>>
 
     @Query("SELECT * FROM favourites WHERE title = :search")
     fun findByTitle(search: String?): FavouritesDb?

@@ -46,12 +46,7 @@ class FavouritesFragment : Fragment() {
 
         recyclerFavourites.adapter = adapter
 
-        viewModel.favourites?.observe(viewLifecycleOwner, { favouritesDb ->
-            viewModel.loadFavouriteItems(favouritesDb)
-
-        })
-
-        viewModel.favouriteItems.observe(viewLifecycleOwner, { favourites ->
+        viewModel.favourites.observe(viewLifecycleOwner, { favourites ->
             adapter.setItems(favourites)
         })
     }

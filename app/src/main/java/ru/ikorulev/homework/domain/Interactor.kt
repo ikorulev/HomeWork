@@ -23,7 +23,7 @@ class Interactor(
 ) {
     //Films
     fun isEmpty(): Boolean{
-        return Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.getAll()?.value==null
+        return Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.getListAll()?.size==0
     }
 
     fun deleteAllFilms(){
@@ -84,7 +84,8 @@ class Interactor(
         }
     }
 
-    fun selectFilm(filmItem: FilmItem, filmDb: List<FilmDb>?) {
+    fun selectFilm(filmItem: FilmItem) {
+        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.getListAll()
         if (filmDb!=null) {
             filmDb.forEach {
                 it.isSelected = it.filmTitle == filmItem.filmTitle

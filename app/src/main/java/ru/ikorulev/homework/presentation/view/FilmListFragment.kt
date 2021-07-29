@@ -92,11 +92,8 @@ class FilmListFragment : Fragment() {
             }
         })
 
-        viewModel.films?.observe(viewLifecycleOwner, { filmsDb ->
-            viewModel.loadFilmItems(filmsDb)
-        })
 
-        viewModel.filmItems.observe(viewLifecycleOwner, { films ->
+        viewModel.films.observe(viewLifecycleOwner, { films ->
             adapter.setItems(films)
         })
 

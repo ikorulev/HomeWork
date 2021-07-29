@@ -2,13 +2,19 @@ package ru.ikorulev.homework.presentation.viewmodel
 
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.ikorulev.homework.App
-import ru.ikorulev.homework.data.room.FilmDb
 import ru.ikorulev.homework.data.FilmItem
-import ru.ikorulev.homework.data.room.Db
-import ru.ikorulev.homework.data.room.FavouritesDb
 import ru.ikorulev.homework.data.room.DataRepository
+import ru.ikorulev.homework.data.room.FavouritesDb
+import ru.ikorulev.homework.data.room.FilmDb
 import ru.ikorulev.homework.domain.Interactor
 
 class FilmViewModel(application: Application)  : AndroidViewModel(application){
@@ -17,19 +23,15 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
     private val repository: DataRepository
 
     private val mFilms = MutableLiveData<List<FilmItem>>()
-    val filmItems: LiveData<List<FilmItem>>
+    val films: LiveData<List<FilmItem>>
         get() = mFilms
 
     private val mFavourites = MutableLiveData<List<FilmItem>>()
-    val favouriteItems: LiveData<List<FilmItem>>
+    val favourites: LiveData<List<FilmItem>>
         get() = mFavourites
-
 
     private val mSelectedFilm = MutableLiveData<FilmItem>()
     private val mErrors = MutableLiveData<String>()
-
-    val films: LiveData<List<FilmDb>>?
-    val favourites: LiveData<List<FavouritesDb>>?
 
     val selectedFilms: LiveData<FilmItem>
         get() = mSelectedFilm
@@ -39,11 +41,49 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
 
 
     init {
-        val filmDao = Db.getInstance(App.instance.applicationContext)?.getFilmDao()
-        val favouritesDao = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
-        repository = DataRepository(filmDao, favouritesDao)
-        films = repository.films
-        favourites = repository.favourites
+
+        repository = DataRepository()
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getFilms()?.collect() {list ->
+                withContext(Dispatchers.Main) {
+                    val items = mutableListOf<FilmItem>()
+                    list.forEach {
+                        items.add(
+                            FilmItem(
+                                it.filmTitle,
+                                it.filmPath,
+                                it.filmDetails,
+                                it.isSelected,
+                                it.isFavorite
+                            )
+                        )
+                    }
+                    mFilms.value = items
+                }
+            }
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getFavourites()?.collect() {list ->
+                withContext(Dispatchers.Main) {
+                    val items = mutableListOf<FilmItem>()
+                    list.forEach {
+                        items.add(
+                            FilmItem(
+                                it.filmTitle,
+                                it.filmPath,
+                                "",
+                                false,
+                                false
+                            )
+                        )
+                    }
+                    mFavourites.value = items
+                }
+            }
+        }
+
     }
 
     fun initFilms(){
@@ -60,43 +100,10 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
         })
     }
 
-    fun loadFilmItems(filmsDb: List<FilmDb>) {
-
-        val items = mutableListOf<FilmItem>()
-        filmsDb.forEach {
-            items.add(
-                FilmItem(
-                    it.filmTitle,
-                    it.filmPath,
-                    it.filmDetails,
-                    it.isSelected,
-                    it.isFavorite
-                )
-            )
-        }
-        mFilms.value = items
-    }
-
-    fun loadFavouriteItems(favouritesDb: List<FavouritesDb>) {
-
-        val items = mutableListOf<FilmItem>()
-        favouritesDb.forEach {
-            items.add(
-                FilmItem(
-                    it.filmTitle,
-                    it.filmPath,
-                    "",
-                    false,
-                    false
-                )
-            )
-        }
-        mFavourites.value = items
-    }
 
     fun onFilmClick(filmItem: FilmItem) {
         mSelectedFilm.value = filmItem
-        interactor.selectFilm(filmItem, films?.value)
+        interactor.selectFilm(filmItem)
     }
 
     fun onFavoriteClick(filmItem: FilmItem): Boolean {
@@ -114,9 +121,9 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
     }
 
     fun indexOfFilm(filmItem: FilmItem): Int {
-        val filmDb = interactor.findFilmDb(filmItem)
-        if (filmDb!=null) {
-            return films?.value!!.indexOf(filmDb)
+        val items = mFilms.value?.toList()
+        if (filmItem!=null && items!=null) {
+            return items.indexOf(filmItem)
         } else{
             return 0
         }
@@ -127,3 +134,5 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
     }
 
 }
+
+

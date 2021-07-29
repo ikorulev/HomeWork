@@ -1,13 +1,22 @@
 package ru.ikorulev.homework.data.room
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import ru.ikorulev.homework.App
 
-class DataRepository(filmDao: FilmDao?, favouritesDao: FavouritesDao?){
+class DataRepository() {
 
-    val films: LiveData<List<FilmDb>>? = filmDao?.getAll()
-    val favourites: LiveData<List<FavouritesDb>>? = favouritesDao?.getAll()
-    val error: LiveData<String> = MutableLiveData()
+    val filmDao = Db.getInstance(App.instance.applicationContext)?.getFilmDao()
+    val favouritesDao = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
 
+    suspend fun getFilms() = withContext(Dispatchers.IO) {
+        return@withContext filmDao?.getAll()
+    }
+
+    suspend fun getFavourites() = withContext(Dispatchers.IO) {
+        return@withContext favouritesDao?.getAll()
+    }
 }
+
+
 

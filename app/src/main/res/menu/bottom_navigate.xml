@@ -5,12 +5,15 @@
         android:icon="@drawable/list"
         android:title="@string/list" />
     <item
-        android:id="@+id/nav_detail"
-        android:icon="@drawable/detail"
-        android:title="@string/detail" />
-    <item
         android:id="@+id/nav_favourites"
         android:icon="@drawable/favourites_fill"
         android:title="@string/favourites" />
-
+    <item
+        android:id="@+id/nav_download"
+        android:icon="@drawable/download"
+        android:title="@string/download" />
+    <item
+        android:id="@+id/nav_clear"
+        android:icon="@drawable/clear"
+        android:title="@string/Clear" />
 </menu>

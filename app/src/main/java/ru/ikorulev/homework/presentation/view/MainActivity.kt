@@ -1,52 +1,63 @@
-package ru.ikorulev.homework
+package ru.ikorulev.homework.presentation.view
 
 import android.content.DialogInterface
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import ru.ikorulev.homework.Favourites.FavouritesFragment
+import ru.ikorulev.homework.App
+import ru.ikorulev.homework.R
+import ru.ikorulev.homework.data.FilmItem
+import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
+
 
 class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickListener {
     companion object {
+        private const val FILM_NUMBER = "FILM_NUMBER"
         var navItem = R.id.nav_list
     }
 
     private lateinit var BottomNavigation: BottomNavigationView
 
+    private val viewModel: FilmViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initBottomNavigation()
-        initFilms()
-        openFragmet()
+        viewModel.initFilms()
+        openFragment()
     }
 
     private fun initBottomNavigation() {
         BottomNavigation = findViewById(R.id.filmNavigation)
-        BottomNavigation.setOnNavigationItemReselectedListener { true }
         BottomNavigation.setOnNavigationItemSelectedListener { item ->
             navItem = item.itemId
             //при переходе в начало очищаем стек
             if (navItem == R.id.nav_list) {
                 supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
             }
-            openFragmet()
+            openFragment()
             true
         }
     }
 
-    private fun openFragmet() {
+    private fun openFragment() {
         when (navItem) {
             R.id.nav_list -> {
                 openFilmList()
             }
-            R.id.nav_detail -> {
-                openFilmDetails()
-            }
             R.id.nav_favourites -> {
                 openFavourites()
+            }
+            R.id.nav_download -> {
+                viewModel.loadFilms()
+            }
+            R.id.nav_clear -> {
+                App.instance.interactor.deleteAllFilms()
+                App.instance.interactor.deleteAllFavourites()
             }
         }
     }
@@ -80,63 +91,15 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
             .replace(
                 R.id.fragmentContainer,
                 FavouritesFragment(),
-                FavouritesFragment.TAG)
+                FavouritesFragment.TAG
+            )
             .addToBackStack("FilmFavourites")
             .commit()
     }
 
     override fun onFilmDetailsClick(filmItem: FilmItem) {
-        DataRepository.films.forEach {
-            it.isSelected = it == filmItem
-        }
-
-        navItem = R.id.nav_detail
-        BottomNavigation.selectedItemId = navItem
         openFilmDetails()
-
     }
-
-    private fun initFilms() {
-        if (DataRepository.films.isEmpty()) {
-            DataRepository.films.add(
-                FilmItem(
-                    getString(R.string.title1),
-                    getString(R.string.detail1),
-                    R.drawable.img1,
-                    false,
-                    false
-                )
-            )
-            DataRepository.films.add(
-                FilmItem(
-                    getString(R.string.title2),
-                    getString(R.string.detail2),
-                    R.drawable.img2,
-                    false,
-                    false
-                )
-            )
-            DataRepository.films.add(
-                FilmItem(
-                    getString(R.string.title3),
-                    getString(R.string.detail3),
-                    R.drawable.img3,
-                    false,
-                    false
-                )
-            )
-            DataRepository.films.add(
-                FilmItem(
-                    getString(R.string.title4),
-                    getString(R.string.detail4),
-                    R.drawable.img4,
-                    false,
-                    false
-                )
-            )
-        }
-    }
-
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
@@ -144,7 +107,7 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
                 supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 navItem = R.id.nav_list
                 BottomNavigation.selectedItemId = navItem
-                openFragmet()
+                openFragment()
             } else {
                 supportFragmentManager.popBackStack()
             }

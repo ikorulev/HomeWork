@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Finding movie.</string>
+    <string name="app_name">Finding movie</string>
     <string name="hello">Hello</string>
     <string name="title1">I Care a Lot</string>
     <string name="title2">Daddy 2</string>
@@ -18,4 +18,8 @@
     <string name="filmImage">Film image</string>
     <string name="favourites">Favourites</string>
     <string name="list">List</string>
+    <string name="download">Download</string>
+    <string name="Error">Loading error</string>
+    <string name="Retry">Retry the download?</string>
+    <string name="Clear">Clear tables</string>
 </resources>

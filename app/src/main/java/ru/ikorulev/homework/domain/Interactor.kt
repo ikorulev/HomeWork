@@ -1,15 +1,13 @@
 package ru.ikorulev.homework.domain
 
-import android.content.DialogInterface
 import android.util.Log
-import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.LiveData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import ru.ikorulev.homework.App
 import ru.ikorulev.homework.R
-import ru.ikorulev.homework.data.*
+import ru.ikorulev.homework.data.FilmItem
+import ru.ikorulev.homework.data.room.DataRepository
 import ru.ikorulev.homework.data.room.Db
 import ru.ikorulev.homework.data.room.FavouritesDb
 import ru.ikorulev.homework.data.room.FilmDb
@@ -18,15 +16,21 @@ import ru.ikorulev.homework.data.tmdb.TMDbService
 
 class Interactor(
 
-    private val tmDbService: TMDbService
+    private val tmDbService: TMDbService,
+    private val dataRepository: DataRepository
 
 ) {
     //Films
-    fun isEmpty(): Boolean{
-        return Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.getListAll()?.size==0
+    suspend fun updateFilmIsWatchLater(filmItem: FilmItem) {
+        dataRepository.updateFilmIsWatchLater(filmItem)
     }
 
-    fun deleteAllFilms(){
+    fun isEmpty(): Boolean {
+        return Db.getInstance(App.instance.applicationContext)?.getFilmDao()
+            ?.getListAll()?.size == 0
+    }
+
+    fun deleteAllFilms() {
         Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.deleteAll()
     }
 
@@ -49,13 +53,14 @@ class Interactor(
                     filmDb.clear()
                     if (response.isSuccessful) {
                         response.body()?.movies?.forEach {
-                            if (it.filmTitle != null && it.filmTitle.isNotEmpty()
+                            if (it.filmId != null && it.filmId != 0
+                                && it.filmTitle != null && it.filmTitle.isNotEmpty()
                                 && it.filmPath != null && it.filmPath.isNotEmpty()
                                 && it.filmDetails != null && it.filmDetails.isNotEmpty()
                             ) {
                                 filmDb.add(
                                     FilmDb(
-                                        //it.id,
+                                        it.filmId,
                                         it.filmTitle,
                                         it.filmPath,
                                         it.filmDetails
@@ -77,7 +82,8 @@ class Interactor(
 
 
     fun updateFilmIsFavorite(filmItem: FilmItem) {
-        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.findByTitle(filmItem.filmTitle)
+        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()
+            ?.findByTitle(filmItem.filmTitle)
         if (filmDb != null) {
             filmDb.isFavorite = filmItem.isFavorite
             Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.update(filmDb)
@@ -86,39 +92,69 @@ class Interactor(
 
     fun selectFilm(filmItem: FilmItem) {
         val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.getListAll()
-        if (filmDb!=null) {
+        if (filmDb != null) {
             filmDb.forEach {
                 it.isSelected = it.filmTitle == filmItem.filmTitle
             }
-            Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.updateAll(filmDb.toList())
+            Db.getInstance(App.instance.applicationContext)?.getFilmDao()
+                ?.updateAll(filmDb.toList())
         }
     }
 
     fun findFilmDb(filmItem: FilmItem): FilmDb? {
-        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.findByTitle(filmItem.filmTitle)
+        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()
+            ?.findByTitle(filmItem.filmTitle)
         return filmDb
     }
 
     //Favourites
-    fun findFavourites(filmItem: FilmItem) : Boolean {
-        val favouritesDb = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.findByTitle(filmItem.filmTitle)
+    fun findFavourites(filmItem: FilmItem): Boolean {
+        val favouritesDb = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
+            ?.findByTitle(filmItem.filmTitle)
         return favouritesDb != null
     }
 
     fun insertFavourites(filmItem: FilmItem) {
         Db.getInstance(App.instance.applicationContext)
-            ?.getFavouritesDao()?.insert(FavouritesDb(filmItem.filmTitle, filmItem.filmPath))
+            ?.getFavouritesDao()
+            ?.insert(
+                FavouritesDb(
+                    filmItem.filmId,
+                    filmItem.filmTitle,
+                    filmItem.filmPath
+                )
+            )
     }
 
     fun deleteFavourites(filmItem: FilmItem) {
-        val favouritesDb = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.findByTitle(filmItem.filmTitle)
-        if (favouritesDb!=null) {
-            Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.delete(favouritesDb)
+        val favouritesDb = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
+            ?.findByTitle(filmItem.filmTitle)
+        if (favouritesDb != null) {
+            Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
+                ?.delete(favouritesDb)
         }
     }
 
-    fun deleteAllFavourites(){
+    fun deleteAllFavourites() {
         Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.deleteAll()
+    }
+
+    //WatchLater
+    suspend fun findWatchLater(filmItem: FilmItem): Boolean {
+        return dataRepository.findWatchLater(filmItem)
+    }
+
+    suspend fun insertWatchLater(filmItem: FilmItem) {
+        dataRepository.insertWatchLater(filmItem)
+    }
+
+    suspend fun deleteWatchLater(filmItem: FilmItem) {
+        dataRepository.deleteWatchLater(filmItem)
+    }
+
+
+    fun deleteAllWatchLater() {
+        Db.getInstance(App.instance.applicationContext)?.getWatchLaterDao()?.deleteAll()
     }
 
 }

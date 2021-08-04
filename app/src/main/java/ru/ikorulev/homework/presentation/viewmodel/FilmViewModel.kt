@@ -13,11 +13,10 @@ import kotlinx.coroutines.withContext
 import ru.ikorulev.homework.App
 import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.data.room.DataRepository
-import ru.ikorulev.homework.data.room.FavouritesDb
-import ru.ikorulev.homework.data.room.FilmDb
 import ru.ikorulev.homework.domain.Interactor
+import java.util.*
 
-class FilmViewModel(application: Application)  : AndroidViewModel(application){
+class FilmViewModel(application: Application) : AndroidViewModel(application) {
 
     private val interactor = App.instance.interactor
     private val repository: DataRepository
@@ -39,60 +38,94 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
     val errors: LiveData<String>
         get() = mErrors
 
+    lateinit var datePickerFilmItem:  FilmItem
+
+    private val mWatchLater = MutableLiveData<List<FilmItem>>()
+    val watchLater: LiveData<List<FilmItem>>
+        get() = mWatchLater
 
     init {
 
         repository = DataRepository()
+        val calendar = Calendar.getInstance()
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getFilms()?.collect() {list ->
-                withContext(Dispatchers.Main) {
-                    val items = mutableListOf<FilmItem>()
-                    list.forEach {
-                        items.add(
-                            FilmItem(
-                                it.filmTitle,
-                                it.filmPath,
-                                it.filmDetails,
-                                it.isSelected,
-                                it.isFavorite
-                            )
+            repository.getFilms()?.collect() { list ->
+                val items = mutableListOf<FilmItem>()
+                list.forEach {
+                    items.add(
+                        FilmItem(
+                            it.filmId,
+                            it.filmTitle,
+                            it.filmPath,
+                            it.filmDetails,
+                            it.isSelected,
+                            it.isFavorite,
+                            it.isWatchLater,
+                            calendar.time,
                         )
-                    }
+                    )
+                }
+                withContext(Dispatchers.Main) {
                     mFilms.value = items
                 }
             }
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            repository.getFavourites()?.collect() {list ->
-                withContext(Dispatchers.Main) {
-                    val items = mutableListOf<FilmItem>()
-                    list.forEach {
-                        items.add(
-                            FilmItem(
-                                it.filmTitle,
-                                it.filmPath,
-                                "",
-                                false,
-                                false
-                            )
+            repository.getFavourites()?.collect() { list ->
+                val items = mutableListOf<FilmItem>()
+                list.forEach {
+                    items.add(
+                        FilmItem(
+                            it.filmId,
+                            it.filmTitle,
+                            it.filmPath,
+                            "",
+                            false,
+                            false,
+                            false,
+                            calendar.time,
                         )
-                    }
+                    )
+                }
+                withContext(Dispatchers.Main) {
                     mFavourites.value = items
                 }
             }
         }
 
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getWatchLater()?.collect() {list ->
+                val items = mutableListOf<FilmItem>()
+                list.forEach {
+                    items.add(
+                        FilmItem(
+                            it.filmId,
+                            it.filmTitle,
+                            it.filmPath,
+                            "",
+                            false,
+                            false,
+                            false,
+                            it.watchDate,
+                        )
+                    )
+                }
+                withContext(Dispatchers.Main) {
+                    mWatchLater.value = items
+                }
+            }
+        }
     }
 
-    fun initFilms(){
+    fun initFilms() {
         if (interactor.isEmpty()) {
             loadFilms(1)
         }
     }
 
-    fun loadFilms(page: Int = 1){
+    fun loadFilms(page: Int = 1) {
         interactor.loadFilms(page, object : Interactor.GetFilmCallback {
             override fun onError(error: String) {
                 mErrors.value = error
@@ -120,16 +153,24 @@ class FilmViewModel(application: Application)  : AndroidViewModel(application){
         }
     }
 
-    fun indexOfFilm(filmItem: FilmItem): Int {
-        val items = mFilms.value?.toList()
-        if (filmItem!=null && items!=null) {
-            return items.indexOf(filmItem)
-        } else{
-            return 0
+    fun deleteWatchLater(filmItem: FilmItem) {
+        viewModelScope.launch(Dispatchers.IO) {
+            interactor.deleteWatchLater(filmItem)
+            filmItem.isWatchLater = false
+            interactor.updateFilmIsWatchLater(filmItem)
         }
     }
 
-    fun clearError(){
+    suspend fun onDatePickerDialogClick(watchDate: Date?) {
+        if (watchDate!=null) {
+            datePickerFilmItem.isWatchLater = true
+            datePickerFilmItem.watchDate=watchDate
+            interactor.updateFilmIsWatchLater(datePickerFilmItem)
+            interactor.insertWatchLater(datePickerFilmItem)
+        }
+    }
+
+    fun clearError() {
         mErrors.value = ""
     }
 

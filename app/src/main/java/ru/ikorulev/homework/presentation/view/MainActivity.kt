@@ -10,12 +10,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.ikorulev.homework.App
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
+import ru.ikorulev.homework.presentation.view.favourites.FavouritesFragment
+import ru.ikorulev.homework.presentation.view.watch_later.WatchLaterFragment
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 
 
 class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickListener {
     companion object {
-        private const val FILM_NUMBER = "FILM_NUMBER"
         var navItem = R.id.nav_list
     }
 
@@ -52,12 +53,16 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
             R.id.nav_favourites -> {
                 openFavourites()
             }
+            R.id.nav_watch_later -> {
+                openWatchLater()
+            }
             R.id.nav_download -> {
                 viewModel.loadFilms()
             }
             R.id.nav_clear -> {
                 App.instance.interactor.deleteAllFilms()
                 App.instance.interactor.deleteAllFavourites()
+                App.instance.interactor.deleteAllWatchLater()
             }
         }
     }
@@ -97,6 +102,18 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
             .commit()
     }
 
+    private fun openWatchLater() {
+        supportFragmentManager
+            .beginTransaction()
+            .replace(
+                R.id.fragmentContainer,
+                WatchLaterFragment(),
+                WatchLaterFragment.TAG
+            )
+            .addToBackStack("WatchList")
+            .commit()
+    }
+
     override fun onFilmDetailsClick(filmItem: FilmItem) {
         openFilmDetails()
     }
@@ -125,5 +142,4 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
             }.create().show()
         }
     }
-
 }

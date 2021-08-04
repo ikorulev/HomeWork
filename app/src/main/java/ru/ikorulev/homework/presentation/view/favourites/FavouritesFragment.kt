@@ -1,4 +1,4 @@
-package ru.ikorulev.homework.presentation.view
+package ru.ikorulev.homework.presentation.view.favourites
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater

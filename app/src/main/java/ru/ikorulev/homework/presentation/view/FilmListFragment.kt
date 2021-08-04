@@ -75,13 +75,29 @@ class FilmListFragment : Fragment() {
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
                         .show()
                 }
-                viewModel.films?.value?.let {
-                    recyclerFilm?.adapter?.notifyItemChanged(
-                        viewModel.indexOfFilm(filmItem)
+            }
+
+            override fun onWatchLaterClick(filmItem: FilmItem) {
+                if (filmItem.isWatchLater) {
+                    viewModel.deleteWatchLater(filmItem)
+                    Snackbar.make(
+                        view,
+                        "Фильм ${filmItem.filmTitle} успешно удален из списка <Посмотреть позже>",
+                        Snackbar.LENGTH_SHORT
                     )
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                        .show()
+                } else {
+                    viewModel.datePickerFilmItem = filmItem  //чтобы передать в datePickerFragment
+                    val datePickerFragment = DatePickerFragment()
+                    datePickerFragment.show(childFragmentManager, "DatePickerFragment")
+
+
                 }
             }
+
         })
+
         recyclerFilm.adapter = adapter
         recyclerFilm.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {

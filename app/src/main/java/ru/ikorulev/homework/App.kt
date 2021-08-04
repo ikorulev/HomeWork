@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import ru.ikorulev.homework.data.room.DataRepository
 import ru.ikorulev.homework.data.room.Db
 import ru.ikorulev.homework.data.tmdb.TMDbService
 import ru.ikorulev.homework.domain.Interactor
@@ -19,6 +20,7 @@ class App : Application() {
     }
 
     lateinit var tmDbService: TMDbService
+    lateinit var dataRepository: DataRepository
     lateinit var interactor: Interactor
 
         override fun onCreate() {
@@ -28,11 +30,12 @@ class App : Application() {
 
         initRetrofit()
         initInteractor()
-        initRoom()
+        //initRoom()
     }
 
     private fun initInteractor() {
-        interactor = Interactor(tmDbService)
+        dataRepository = DataRepository()
+        interactor = Interactor(tmDbService, dataRepository)
     }
 
     private fun initRetrofit() {

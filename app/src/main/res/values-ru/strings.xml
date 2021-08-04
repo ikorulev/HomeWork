@@ -19,4 +19,5 @@
     <string name="Error">Ошибка загрузки</string>
     <string name="Retry">Повторить загрузку?</string>
     <string name="Clear">Очистить таблицы</string>
+    <string name="watch_later">Посмотреть позже</string>
 </resources>

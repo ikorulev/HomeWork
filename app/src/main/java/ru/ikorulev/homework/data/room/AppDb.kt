@@ -4,10 +4,9 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
-@Database(entities = arrayOf(
-    FilmDb::class,
-    FavouritesDb::class,
-    WatchLaterDb::class), version = 7)
+@Database(
+    entities = [FilmDb::class, FavouritesDb::class, WatchLaterDb::class], version = 7
+)
 
 @TypeConverters(DateConverters::class)
 abstract class AppDb : RoomDatabase() {

@@ -14,7 +14,7 @@ object Db {
                     context,
                     AppDb::class.java, "films.db"
                 )
-                    .allowMainThreadQueries()
+                    //.allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
                     //.addMigrations(MIGRATION_1_2)
                     //.addCallback(DbCallback(context))

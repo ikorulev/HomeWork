@@ -5,15 +5,47 @@ import kotlinx.coroutines.withContext
 import ru.ikorulev.homework.App
 import ru.ikorulev.homework.data.FilmItem
 
-class DataRepository() {
+class DataRepository {
 
-    val filmDao = Db.getInstance(App.instance.applicationContext)?.getFilmDao()
-    val favouritesDao = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
-    val watchLaterDao = Db.getInstance(App.instance.applicationContext)?.getWatchLaterDao()
+    private val filmDao = Db.getInstance(App.instance.applicationContext)?.getFilmDao()
+    private val favouritesDao = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
+    private val watchLaterDao = Db.getInstance(App.instance.applicationContext)?.getWatchLaterDao()
+
+    suspend fun clearTables() = withContext(Dispatchers.IO) {
+        filmDao?.deleteAll()
+        favouritesDao?.deleteAll()
+        watchLaterDao?.deleteAll()
+    }
 
     //Films
     suspend fun getFilms() = withContext(Dispatchers.IO) {
         return@withContext filmDao?.getAll()
+    }
+
+    suspend fun isEmpty() = withContext(Dispatchers.IO) {
+        return@withContext filmDao?.getListAll()?.size == 0
+    }
+
+    suspend fun insertFilmDb(filmDb: List<FilmDb>) = withContext(Dispatchers.IO) {
+        filmDao?.insert(filmDb)
+    }
+
+    fun updateFilmIsSelected(filmItem: FilmItem) {
+        val items = filmDao?.getListAll()
+        if (items != null) {
+            items.forEach {
+                it.isSelected = it.filmTitle == filmItem.filmTitle
+            }
+            filmDao?.updateAll(items.toList())
+        }
+    }
+
+    suspend fun updateFilmIsFavorite(filmItem: FilmItem) = withContext(Dispatchers.IO){
+        val item = filmDao?.findByTitle(filmItem.filmTitle)
+        if (item!=null) {
+            item.isFavorite = filmItem.isFavorite
+            filmDao?.update(item)
+        }
     }
 
     suspend fun updateFilmIsWatchLater(filmItem: FilmItem) = withContext(Dispatchers.IO){
@@ -24,11 +56,27 @@ class DataRepository() {
         }
     }
 
+    //Favourites
     suspend fun getFavourites() = withContext(Dispatchers.IO) {
         return@withContext favouritesDao?.getAll()
     }
 
+    suspend fun insertFavourites(filmItem: FilmItem) = withContext(Dispatchers.IO) {
+        favouritesDao?.insert(
+            FavouritesDb(
+                filmItem.filmId,
+                filmItem.filmTitle,
+                filmItem.filmPath
+            )
+        )
+    }
 
+    suspend fun deleteFavourites(filmItem: FilmItem) = withContext(Dispatchers.IO){
+        val item = favouritesDao?.findByTitle(filmItem.filmTitle)
+        if (item!=null) {
+            favouritesDao?.delete(item)
+        }
+    }
 
     //WatchLater
     suspend fun getWatchLater() = withContext(Dispatchers.IO) {

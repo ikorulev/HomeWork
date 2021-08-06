@@ -1,6 +1,9 @@
 package ru.ikorulev.homework.domain
 
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,141 +23,29 @@ class Interactor(
     private val dataRepository: DataRepository
 
 ) {
-    //Films
-    suspend fun updateFilmIsWatchLater(filmItem: FilmItem) {
-        dataRepository.updateFilmIsWatchLater(filmItem)
-    }
-
-    fun isEmpty(): Boolean {
-        return Db.getInstance(App.instance.applicationContext)?.getFilmDao()
-            ?.getListAll()?.size == 0
-    }
-
-    fun deleteAllFilms() {
-        Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.deleteAll()
-    }
-
-    fun loadFilms(page: Int, callback: GetFilmCallback) {
-        val filmDb = mutableListOf<FilmDb>()
-        tmDbService.getPopularFilms(page = page)
-            .enqueue(object : Callback<GetFilmsResults> {
-                override fun onFailure(call: Call<GetFilmsResults>, t: Throwable) {
-                    callback.onError(
-                        App.instance.applicationContext.getString(R.string.Error)
-                    )
-                }
-
-                override fun onResponse(
-                    call: Call<GetFilmsResults>,
-                    response: Response<GetFilmsResults>
-                ) {
-
-                    Log.d("Interactor", "onResponse")
-                    filmDb.clear()
-                    if (response.isSuccessful) {
-                        response.body()?.movies?.forEach {
-                            if (it.filmId != null && it.filmId != 0
-                                && it.filmTitle != null && it.filmTitle.isNotEmpty()
-                                && it.filmPath != null && it.filmPath.isNotEmpty()
-                                && it.filmDetails != null && it.filmDetails.isNotEmpty()
-                            ) {
-                                filmDb.add(
-                                    FilmDb(
-                                        it.filmId,
-                                        it.filmTitle,
-                                        it.filmPath,
-                                        it.filmDetails
-                                    )
-                                )
-                            }
-                        }
+    suspend fun loadFilms(page: Int) {
+        return withContext(Dispatchers.IO) {
+            val filmDb = mutableListOf<FilmDb>()
+            tmDbService.getPopularFilms(page = page).let { filmResults ->
+                filmResults.movies.forEach {
+                    if (it.filmId != null && it.filmId != 0
+                        && it.filmTitle != null && it.filmTitle.isNotEmpty()
+                        && it.filmPath != null && it.filmPath.isNotEmpty()
+                        && it.filmDetails != null && it.filmDetails.isNotEmpty()
+                    ) {
+                        filmDb.add(
+                            FilmDb(
+                                it.filmId,
+                                it.filmTitle,
+                                it.filmPath,
+                                it.filmDetails
+                            )
+                        )
                     }
-
-                    Db.getInstance(App.instance.applicationContext)
-                        ?.getFilmDao()?.insert(filmDb.toList())
                 }
-            })
-    }
-
-    interface GetFilmCallback {
-        fun onError(error: String)
-    }
-
-
-    fun updateFilmIsFavorite(filmItem: FilmItem) {
-        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()
-            ?.findByTitle(filmItem.filmTitle)
-        if (filmDb != null) {
-            filmDb.isFavorite = filmItem.isFavorite
-            Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.update(filmDb)
-        }
-    }
-
-    fun selectFilm(filmItem: FilmItem) {
-        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.getListAll()
-        if (filmDb != null) {
-            filmDb.forEach {
-                it.isSelected = it.filmTitle == filmItem.filmTitle
+                dataRepository.insertFilmDb(filmDb.toList())
             }
-            Db.getInstance(App.instance.applicationContext)?.getFilmDao()
-                ?.updateAll(filmDb.toList())
         }
-    }
-
-    fun findFilmDb(filmItem: FilmItem): FilmDb? {
-        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()
-            ?.findByTitle(filmItem.filmTitle)
-        return filmDb
-    }
-
-    //Favourites
-    fun findFavourites(filmItem: FilmItem): Boolean {
-        val favouritesDb = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
-            ?.findByTitle(filmItem.filmTitle)
-        return favouritesDb != null
-    }
-
-    fun insertFavourites(filmItem: FilmItem) {
-        Db.getInstance(App.instance.applicationContext)
-            ?.getFavouritesDao()
-            ?.insert(
-                FavouritesDb(
-                    filmItem.filmId,
-                    filmItem.filmTitle,
-                    filmItem.filmPath
-                )
-            )
-    }
-
-    fun deleteFavourites(filmItem: FilmItem) {
-        val favouritesDb = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
-            ?.findByTitle(filmItem.filmTitle)
-        if (favouritesDb != null) {
-            Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()
-                ?.delete(favouritesDb)
-        }
-    }
-
-    fun deleteAllFavourites() {
-        Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.deleteAll()
-    }
-
-    //WatchLater
-    suspend fun findWatchLater(filmItem: FilmItem): Boolean {
-        return dataRepository.findWatchLater(filmItem)
-    }
-
-    suspend fun insertWatchLater(filmItem: FilmItem) {
-        dataRepository.insertWatchLater(filmItem)
-    }
-
-    suspend fun deleteWatchLater(filmItem: FilmItem) {
-        dataRepository.deleteWatchLater(filmItem)
-    }
-
-
-    fun deleteAllWatchLater() {
-        Db.getInstance(App.instance.applicationContext)?.getWatchLaterDao()?.deleteAll()
     }
 
 }

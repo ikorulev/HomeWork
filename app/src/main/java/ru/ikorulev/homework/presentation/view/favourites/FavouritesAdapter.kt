@@ -7,7 +7,7 @@ import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.R
 import java.util.ArrayList
 
-class FavouritesAdapter () : RecyclerView.Adapter<FavouritesVH>() {
+class FavouritesAdapter : RecyclerView.Adapter<FavouritesVH>() {
 
     private val items = ArrayList<FilmItem>()
 

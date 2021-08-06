@@ -18,7 +18,6 @@ import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.presentation.view.film.FilmAdapter
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 
-
 class FilmListFragment : Fragment() {
     companion object {
         const val TAG = "FilmListFragment"
@@ -58,7 +57,8 @@ class FilmListFragment : Fragment() {
             }
 
             override fun onFavoriteClick(filmItem: FilmItem) {
-                if (viewModel.onFavoriteClick(filmItem) == true) {
+                if (!filmItem.isFavorite) {
+                    viewModel.insertFavourites(filmItem)
                     Snackbar.make(
                         view,
                         "Фильм ${filmItem.filmTitle} успешно добавлен в избранное",
@@ -67,6 +67,7 @@ class FilmListFragment : Fragment() {
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
                         .show()
                 } else {
+                    viewModel.deleteFavourites(filmItem)
                     Snackbar.make(
                         view,
                         "Фильм ${filmItem.filmTitle} успешно удален из избранного",
@@ -91,8 +92,6 @@ class FilmListFragment : Fragment() {
                     viewModel.datePickerFilmItem = filmItem  //чтобы передать в datePickerFragment
                     val datePickerFragment = DatePickerFragment()
                     datePickerFragment.show(childFragmentManager, "DatePickerFragment")
-
-
                 }
             }
 
@@ -114,7 +113,7 @@ class FilmListFragment : Fragment() {
         })
 
         viewModel.errors.observe(viewLifecycleOwner, { error ->
-            if (error.length > 0) {
+            if (error.isNotEmpty()) {
                 AlertDialog.Builder(requireContext()).apply {
                     setTitle(error)
                     setMessage(getString(R.string.Retry))
@@ -135,5 +134,4 @@ class FilmListFragment : Fragment() {
     interface OnFilmDetailsClickListener {
         fun onFilmDetailsClick(filmItem: FilmItem)
     }
-
 }

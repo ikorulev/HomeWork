@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 import java.util.*
 
-class DatePickerFragment() : DialogFragment() {
+class DatePickerFragment : DialogFragment() {
 
     private val viewModel: FilmViewModel by activityViewModels()
 
@@ -27,7 +27,7 @@ class DatePickerFragment() : DialogFragment() {
                 viewModel.onDatePickerDialogClick(watchDate)
             }
         }, year, month, day)
-
+        dpd.setTitle("Выберите дату просмотра")
         return dpd
     }
 }

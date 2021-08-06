@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
+import java.text.DateFormat.getDateInstance
 import java.text.SimpleDateFormat
 
 class WatchLaterVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,8 +19,9 @@ class WatchLaterVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(item: FilmItem) {
 
-        val simpleDateFormat = SimpleDateFormat("dd-MM-yy")
-        watchDateButton.setText(simpleDateFormat.format(item.watchDate))
+        //val simpleDateFormat = SimpleDateFormat("dd-MM-yy")
+        //watchDateButton.text = simpleDateFormat.format(item.watchDate)
+        watchDateButton.text = getDateInstance().format(item.watchDate)
 
         filmTitle.text = item.filmTitle
 

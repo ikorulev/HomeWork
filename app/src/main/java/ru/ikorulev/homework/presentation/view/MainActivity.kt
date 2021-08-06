@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
         var navItem = R.id.nav_list
     }
 
-    private lateinit var BottomNavigation: BottomNavigationView
+    private lateinit var bottomNavigation: BottomNavigationView
 
     private val viewModel: FilmViewModel by viewModels()
 
@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
     }
 
     private fun initBottomNavigation() {
-        BottomNavigation = findViewById(R.id.filmNavigation)
-        BottomNavigation.setOnNavigationItemSelectedListener { item ->
+        bottomNavigation = findViewById(R.id.filmNavigation)
+        bottomNavigation.setOnNavigationItemSelectedListener { item ->
             navItem = item.itemId
             //при переходе в начало очищаем стек
             if (navItem == R.id.nav_list) {
@@ -60,9 +60,7 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
                 viewModel.loadFilms()
             }
             R.id.nav_clear -> {
-                App.instance.interactor.deleteAllFilms()
-                App.instance.interactor.deleteAllFavourites()
-                App.instance.interactor.deleteAllWatchLater()
+                viewModel.clearTables()
             }
         }
     }
@@ -123,7 +121,7 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
             if (navItem != R.id.nav_list) {
                 supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 navItem = R.id.nav_list
-                BottomNavigation.selectedItemId = navItem
+                bottomNavigation.selectedItemId = navItem
                 openFragment()
             } else {
                 supportFragmentManager.popBackStack()

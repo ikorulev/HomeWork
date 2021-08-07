@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import ru.ikorulev.homework.App
 import ru.ikorulev.homework.data.FilmItem
+import java.util.*
 
 class DataRepository {
 
@@ -29,6 +30,25 @@ class DataRepository {
     suspend fun insertFilmDb(filmDb: List<FilmDb>) = withContext(Dispatchers.IO) {
         filmDao?.insert(filmDb)
     }
+
+    suspend fun findFilm(title: String): FilmItem? = withContext(Dispatchers.IO) {
+        var item:FilmItem?=null
+        val itemDb = filmDao?.findByTitle(title)
+        if (itemDb != null) {
+            val calendar = Calendar.getInstance()
+            item = FilmItem(
+                itemDb.filmId,
+                itemDb.filmTitle,
+                itemDb.filmPath,
+                itemDb.filmDetails,
+                itemDb.isSelected,
+                itemDb.isFavorite,
+                itemDb.isWatchLater,
+                calendar.time)
+        }
+        return@withContext item
+    }
+
 
     fun updateFilmIsSelected(filmItem: FilmItem) {
         val items = filmDao?.getListAll()
@@ -83,8 +103,8 @@ class DataRepository {
         return@withContext watchLaterDao?.getAll()
     }
 
-    suspend fun findWatchLater(filmItem: FilmItem): Boolean = withContext(Dispatchers.IO) {
-        return@withContext watchLaterDao?.findByTitle(filmItem.filmTitle)!= null
+    suspend fun getListWatchLater() = withContext(Dispatchers.IO) {
+        return@withContext watchLaterDao?.getListAll()
     }
 
     suspend fun insertWatchLater(filmItem: FilmItem) = withContext(Dispatchers.IO) {

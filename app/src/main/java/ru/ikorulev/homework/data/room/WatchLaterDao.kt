@@ -11,6 +11,9 @@ interface WatchLaterDao {
     @Query("SELECT * FROM watch_later")
     fun getAll(): Flow<List<WatchLaterDb>>
 
+    @Query("SELECT * FROM watch_later")
+    fun getListAll(): List<WatchLaterDb>
+
     @Query("SELECT * FROM watch_later WHERE title = :search")
     fun findByTitle(search: String?): WatchLaterDb?
 

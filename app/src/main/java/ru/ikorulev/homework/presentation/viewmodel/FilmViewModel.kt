@@ -164,21 +164,21 @@ class FilmViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-
-    fun deleteWatchLater(filmItem: FilmItem) {
-        filmItem.isWatchLater = false
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteWatchLater(filmItem)
-            repository.updateFilmIsWatchLater(filmItem)
-        }
-    }
-
     suspend fun onDatePickerDialogClick(watchDate: Date?) {
         if (watchDate != null) {
             datePickerFilmItem.isWatchLater = true
             datePickerFilmItem.watchDate = watchDate
             repository.updateFilmIsWatchLater(datePickerFilmItem)
             repository.insertWatchLater(datePickerFilmItem)
+            interactor.startNotification(App.instance.applicationContext, datePickerFilmItem)
+        }
+    }
+
+    fun deleteWatchLater(filmItem: FilmItem) {
+        filmItem.isWatchLater = false
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteWatchLater(filmItem)
+            repository.updateFilmIsWatchLater(filmItem)
         }
     }
 
@@ -190,7 +190,17 @@ class FilmViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch(Dispatchers.IO) {
             repository.clearTables()
         }
+    }
 
+    fun selectFilm(title: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val item = repository.findFilm(title)
+            if (item != null) {
+                withContext(Dispatchers.Main) {
+                    mSelectedFilm.value = item!!
+                }
+            }
+        }
     }
 
 }

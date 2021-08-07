@@ -7,7 +7,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import ru.ikorulev.homework.App
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.presentation.view.favourites.FavouritesFragment
@@ -29,7 +28,15 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
         setContentView(R.layout.activity_main)
         initBottomNavigation()
         viewModel.initFilms()
-        openFragment()
+
+        val title = intent.getStringExtra("filmTitle")
+        if (title.isNullOrEmpty()) {
+            openFragment()
+        } else {
+            viewModel.selectFilm(title)
+            supportActionBar?.title = title
+            openFilmDetails()
+        }
     }
 
     private fun initBottomNavigation() {
@@ -48,12 +55,15 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
     private fun openFragment() {
         when (navItem) {
             R.id.nav_list -> {
+                supportActionBar?.title = getString(R.string.app_name)
                 openFilmList()
             }
             R.id.nav_favourites -> {
+                supportActionBar?.title = getString(R.string.favourites)
                 openFavourites()
             }
             R.id.nav_watch_later -> {
+                supportActionBar?.title = getString(R.string.watch_later)
                 openWatchLater()
             }
             R.id.nav_download -> {
@@ -113,11 +123,13 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
     }
 
     override fun onFilmDetailsClick(filmItem: FilmItem) {
+        supportActionBar?.title = filmItem.filmTitle
         openFilmDetails()
     }
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
+            supportActionBar?.title = getString(R.string.app_name)
             if (navItem != R.id.nav_list) {
                 supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                 navItem = R.id.nav_list

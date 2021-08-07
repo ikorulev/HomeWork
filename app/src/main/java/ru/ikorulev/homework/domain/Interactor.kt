@@ -1,21 +1,18 @@
 package ru.ikorulev.homework.domain
 
-import android.util.Log
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.core.content.ContextCompat.getSystemService
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.ikorulev.homework.App
-import ru.ikorulev.homework.R
+import ru.ikorulev.homework.WatchDateReceiver
 import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.data.room.DataRepository
-import ru.ikorulev.homework.data.room.Db
-import ru.ikorulev.homework.data.room.FavouritesDb
 import ru.ikorulev.homework.data.room.FilmDb
-import ru.ikorulev.homework.data.tmdb.GetFilmsResults
 import ru.ikorulev.homework.data.tmdb.TMDbService
+import java.util.*
 
 class Interactor(
 
@@ -48,4 +45,12 @@ class Interactor(
         }
     }
 
+    fun startNotification(context: Context, film: FilmItem) {
+        val am = getSystemService(context, AlarmManager::class.java)
+        val intent = Intent(film.filmId.toString(), null, context, WatchDateReceiver::class.java)
+            .putExtra("filmTitle", film.filmTitle)
+            .putExtra("filmPath", film.filmPath)
+        val pIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        am?.set(AlarmManager.RTC_WAKEUP, film.watchDate.time, pIntent)
+    }
 }

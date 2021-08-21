@@ -2,31 +2,57 @@ package ru.ikorulev.homework.presentation.view
 
 import android.content.DialogInterface
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
+import ru.ikorulev.homework.data.repository.FilmRepository
+import ru.ikorulev.homework.data.tmdb.TMDbService
+import ru.ikorulev.homework.di.AppModule
+import ru.ikorulev.homework.di.DaggerAppComponent
+import ru.ikorulev.homework.di.RoomModule
 import ru.ikorulev.homework.presentation.view.favourites.FavouritesFragment
 import ru.ikorulev.homework.presentation.view.watch_later.WatchLaterFragment
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
+import ru.ikorulev.homework.presentation.viewmodel.FilmViewModelFactory
+import javax.inject.Inject
 
 
 class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickListener {
+
     companion object {
         var navItem = R.id.nav_list
     }
 
     private lateinit var bottomNavigation: BottomNavigationView
 
-    private val viewModel: FilmViewModel by viewModels()
+    private lateinit var viewModel: FilmViewModel
+    private lateinit var viewModelFactory: FilmViewModelFactory
+    //private val viewModel: FilmViewModel by viewModels()
+
+    @Inject
+    lateinit var repository: FilmRepository
+
+    @Inject
+    lateinit var tMDbService: TMDbService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        DaggerAppComponent.builder()
+            .appModule(AppModule(application))
+            .roomModule(RoomModule(application))
+            .build()
+            .inject(this)
+
         initBottomNavigation()
+        viewModelFactory = FilmViewModelFactory(application, repository, tMDbService)
+        viewModel = ViewModelProvider(this, viewModelFactory)
+            .get(FilmViewModel::class.java)
+
         viewModel.initFilms()
 
         val title = intent.getStringExtra("filmTitle")

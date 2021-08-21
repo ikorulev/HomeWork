@@ -1,7 +1,8 @@
 package ru.ikorulev.homework.data.room
 
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
+import io.reactivex.Flowable
+import io.reactivex.Single
 
 @Dao
 interface FilmDao {
@@ -15,10 +16,13 @@ interface FilmDao {
     fun updateAll(film: List<FilmDb>)
 
     @Query("SELECT * FROM films")
-    fun getAll(): Flow<List<FilmDb>>
+    fun getAll(): Flowable<List<FilmDb>>
 
     @Query("SELECT * FROM films")
-    fun getListAll(): List<FilmDb>
+    fun getListAll(): Single<List<FilmDb>>
+
+    @Query("SELECT * FROM films WHERE id = :search")
+    fun findById(search: Int): FilmDb?
 
     @Query("SELECT * FROM films WHERE title = :search")
     fun findByTitle(search: String?): FilmDb?

@@ -27,9 +27,9 @@ class FilmVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         if (item.isWatchLater) {
-            watchLater.setImageResource(R.drawable.bookmark_filled)
+            watchLater.setImageResource(R.drawable.alarm_on)
         } else {
-            watchLater.setImageResource(R.drawable.bookmark_border)
+            watchLater.setImageResource(R.drawable.alarm)
         }
 
         filmTitle.text = item.filmTitle

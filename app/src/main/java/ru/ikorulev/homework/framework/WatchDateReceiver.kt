@@ -1,4 +1,4 @@
-package ru.ikorulev.homework
+package ru.ikorulev.homework.framework
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -12,14 +12,17 @@ import androidx.core.app.NotificationManagerCompat
 import com.bumptech.glide.Glide
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import ru.ikorulev.homework.R
 import ru.ikorulev.homework.presentation.view.MainActivity
 
 class WatchDateReceiver : BroadcastReceiver() {
+
     override fun onReceive(context: Context, intent: Intent) {
-        val appName = App.instance.getString(R.string.app_name)
+
+        val appName = context.getString(R.string.app_name)
         val filmTitle = intent.getStringExtra("filmTitle")
         val filmPath = intent.getStringExtra("filmPath")
-        val bitmap = runBlocking(Dispatchers.IO)  {
+        val bitmap = runBlocking(Dispatchers.IO) {
             val futureTarget = Glide.with(context)
                 .asBitmap()
                 .load("https://image.tmdb.org/t/p/w342${filmPath}")
@@ -32,20 +35,21 @@ class WatchDateReceiver : BroadcastReceiver() {
         filmIntent.action = intent.action
         filmIntent.putExtra("filmTitle", filmTitle)
         filmIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        val pendingIntent = PendingIntent.getActivity(context, 0, filmIntent, PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent =
+            PendingIntent.getActivity(context, 0, filmIntent, PendingIntent.FLAG_ONE_SHOT)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val channel = NotificationChannel(appName, appName, importance)
             channel.description = appName
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
-            val notificationManager = App.instance.getSystemService(NotificationManager::class.java)
-            if (notificationManager.getNotificationChannel(appName)==null) {
+            val notificationManager = context.getSystemService(NotificationManager::class.java)
+            if (notificationManager.getNotificationChannel(appName) == null) {
                 notificationManager.createNotificationChannel(channel)
             }
         }
 
-        val builder = NotificationCompat.Builder(context, App.instance.getString(R.string.app_name))
+        val builder = NotificationCompat.Builder(context, context.getString(R.string.app_name))
             .setSmallIcon(R.drawable.detail)
             .setContentTitle(appName)
             .setContentText(filmTitle)

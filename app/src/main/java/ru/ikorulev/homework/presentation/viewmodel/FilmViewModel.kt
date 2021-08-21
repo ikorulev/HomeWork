@@ -1,24 +1,34 @@
 package ru.ikorulev.homework.presentation.viewmodel
 
+import android.app.AlarmManager
 import android.app.Application
+import android.app.PendingIntent
+import android.content.Intent
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
-import ru.ikorulev.homework.App
+import ru.ikorulev.homework.framework.WatchDateReceiver
 import ru.ikorulev.homework.data.FilmItem
-import ru.ikorulev.homework.data.room.DataRepository
+import ru.ikorulev.homework.data.repository.FilmRepository
+import ru.ikorulev.homework.data.room.FilmDb
+import ru.ikorulev.homework.data.tmdb.TMDbService
 import java.util.*
+import javax.inject.Inject
 
-class FilmViewModel(application: Application) : AndroidViewModel(application) {
+class FilmViewModel @Inject constructor(
+    application: Application,
+    val repository: FilmRepository,
+    val tMDbService: TMDbService
+) : AndroidViewModel(application) {
 
-    private val interactor = App.instance.interactor
-    private val repository: DataRepository = DataRepository()
+    val context = application.applicationContext
 
     private val mFilms = MutableLiveData<List<FilmItem>>()
     val films: LiveData<List<FilmItem>>
@@ -43,143 +53,220 @@ class FilmViewModel(application: Application) : AndroidViewModel(application) {
     val watchLater: LiveData<List<FilmItem>>
         get() = mWatchLater
 
+    private val disposables = CompositeDisposable()
+
     init {
+
 
         val calendar = Calendar.getInstance()
 
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getFilms()?.collect { list ->
-                val items = mutableListOf<FilmItem>()
-                list.forEach {
-                    items.add(
-                        FilmItem(
-                            it.filmId,
-                            it.filmTitle,
-                            it.filmPath,
-                            it.filmDetails,
-                            it.isSelected,
-                            it.isFavorite,
-                            it.isWatchLater,
-                            calendar.time,
-                        )
+        repository.getFilms()
+            ?.subscribeOn(Schedulers.io())
+            ?.map { items ->
+                items.map { item ->
+                    FilmItem(
+                        item.filmId,
+                        item.filmTitle,
+                        item.filmPath,
+                        item.filmDetails,
+                        item.isSelected,
+                        item.isFavorite,
+                        item.isWatchLater,
+                        watchDate = calendar.time
                     )
                 }
-                withContext(Dispatchers.Main) {
-                    mFilms.value = items
-                }
             }
-        }
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({
+                mFilms.value = it.toList()
+            }, {
+                mErrors.value = "Ошибка базы данных"
+            })
+            ?.addTo(disposables)
 
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getFavourites()?.collect { list ->
-                val items = mutableListOf<FilmItem>()
-                list.forEach {
-                    items.add(
-                        FilmItem(
-                            it.filmId,
-                            it.filmTitle,
-                            it.filmPath,
-                            "",
-                            isSelected = false,
-                            isFavorite = false,
-                            isWatchLater = false,
-                            watchDate = calendar.time,
-                        )
+        repository.getFavourites()
+            ?.subscribeOn(Schedulers.io())
+            ?.map { items ->
+                items.map { item ->
+                    FilmItem(
+                        item.filmId,
+                        item.filmTitle,
+                        item.filmPath,
+                        "",
+                        isSelected = false,
+                        isFavorite = false,
+                        isWatchLater = false,
+                        watchDate = calendar.time
                     )
                 }
-                withContext(Dispatchers.Main) {
-                    mFavourites.value = items
-                }
             }
-        }
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({ list ->
+                mFavourites.value = list
+            }, {
+                mErrors.value = "Ошибка базы данных"
+            })
+            ?.addTo(disposables)
 
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.getWatchLater()?.collect { list ->
-                val items = mutableListOf<FilmItem>()
-                list.forEach {
-                    items.add(
-                        FilmItem(
-                            it.filmId,
-                            it.filmTitle,
-                            it.filmPath,
-                            "",
-                            isSelected = false,
-                            isFavorite = false,
-                            isWatchLater = false,
-                            watchDate = it.watchDate,
-                        )
+        repository.getWatchLater()
+            ?.subscribeOn(Schedulers.io())
+            ?.map { items ->
+                items.map { item ->
+                    FilmItem(
+                        item.filmId,
+                        item.filmTitle,
+                        item.filmPath,
+                        "",
+                        isSelected = false,
+                        isFavorite = false,
+                        isWatchLater = false,
+                        watchDate = item.watchDate
                     )
                 }
-                withContext(Dispatchers.Main) {
-                    mWatchLater.value = items
-                }
             }
-        }
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({ list ->
+                mWatchLater.value = list
+            }, {
+                mErrors.value = "Ошибка базы данных"
+            })
+            ?.addTo(disposables)
     }
 
     fun initFilms() {
-        viewModelScope.launch(Dispatchers.IO) {
-            if (repository.isEmpty()) {
-                this@FilmViewModel.loadFilms(1)
+        repository.getListFilms()
+            ?.subscribeOn(Schedulers.io())
+            ?.filter {
+                it.size == 0
             }
-        }
+            ?.subscribe({
+                loadFilms(1)
+            })
+            ?.addTo(disposables)
     }
 
     fun loadFilms(page: Int = 1) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                interactor.loadFilms(page)
-            } catch (e: Exception) {
-                withContext(Dispatchers.Main) {
-                    mErrors.value = if (e is HttpException) {
-                        "Ошибка сервера, код ${e.code()}"
-                    } else {
-                        "Ошибка сети"
+
+        tMDbService.getPopularFilms(page = page)
+            .subscribeOn(Schedulers.io())
+            .map { filmResults ->
+                val filmDb = mutableListOf<FilmDb>()
+                filmResults.movies.forEach {
+                    if (it.filmId != 0
+                        && it.filmTitle != null && it.filmTitle.isNotEmpty()
+                        && it.filmPath != null && it.filmPath.isNotEmpty()
+                        && it.filmDetails != null && it.filmDetails.isNotEmpty()
+                    ) {
+                        filmDb.add(
+                            FilmDb(
+                                it.filmId,
+                                it.filmTitle,
+                                it.filmPath,
+                                it.filmDetails
+                            )
+                        )
                     }
                 }
+                repository.insertFilms(filmDb.toList())
             }
-        }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({}, {
+                mErrors.value = if (it is HttpException) {
+                    "Ошибка сервера, код ${it.code()}"
+                } else {
+                    "Ошибка сети"
+                }
+            })
+            .addTo(disposables)
     }
 
-    fun onFilmClick(filmItem: FilmItem) {
+    fun onFilmDetailsClick(filmItem: FilmItem) {
         mSelectedFilm.value = filmItem
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.updateFilmIsSelected(filmItem)
-        }
+        repository.getListFilms()
+            ?.subscribeOn(Schedulers.io())
+            ?.subscribe { items ->
+                items.forEach {
+                    it.isSelected = it.filmTitle == filmItem.filmTitle
+                }
+                repository.updateFilms(items)
+            }
+            ?.addTo(disposables)
     }
 
     fun insertFavourites(filmItem: FilmItem) {
         filmItem.isFavorite = true
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.insertFavourites(filmItem)
-            repository.updateFilmIsFavorite(filmItem)
-        }
+
+        val film = Single.just(filmItem)
+        film.subscribeOn(Schedulers.io())
+            .subscribe { item ->
+                repository.insertFavourites(item)
+                repository.updateFilm(item)
+            }
+            .addTo(disposables)
     }
+
 
     fun deleteFavourites(filmItem: FilmItem) {
         filmItem.isFavorite = false
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteFavourites(filmItem)
-            repository.updateFilmIsFavorite(filmItem)
-        }
+
+        val film = Single.just(filmItem)
+        film.subscribeOn(Schedulers.io())
+            .subscribe { item ->
+                repository.deleteFavourites(item)
+                repository.updateFilm(item)
+            }
+            .addTo(disposables)
     }
 
-    suspend fun onDatePickerDialogClick(watchDate: Date?) {
+    fun onDatePickerDialogClick(watchDate: Date?) {
         if (watchDate != null) {
             datePickerFilmItem.isWatchLater = true
             datePickerFilmItem.watchDate = watchDate
-            repository.updateFilmIsWatchLater(datePickerFilmItem)
-            repository.insertWatchLater(datePickerFilmItem)
-            interactor.startNotification(App.instance.applicationContext, datePickerFilmItem)
+
+            val film = Single.just(datePickerFilmItem)
+            film.subscribeOn(Schedulers.io())
+                .subscribe { item ->
+                    repository.updateFilm(item)
+                    repository.insertWatchLater(item)
+                    startNotification(item)
+                }
+                .addTo(disposables)
         }
+    }
+
+    fun startNotification(film: FilmItem) {
+        val am = ContextCompat.getSystemService(
+
+            context,
+            AlarmManager::class.java
+        )
+        val intent = Intent(
+            film.filmId.toString(),
+            null,
+            context,
+            WatchDateReceiver::class.java
+        )
+            .putExtra("filmTitle", film.filmTitle)
+            .putExtra("filmPath", film.filmPath)
+        val pIntent = PendingIntent.getBroadcast(
+            context,
+            0,
+            intent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
+        am?.set(AlarmManager.RTC_WAKEUP, film.watchDate.time, pIntent)
     }
 
     fun deleteWatchLater(filmItem: FilmItem) {
         filmItem.isWatchLater = false
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.deleteWatchLater(filmItem)
-            repository.updateFilmIsWatchLater(filmItem)
-        }
+
+        val film = Single.just(filmItem)
+        film.subscribeOn(Schedulers.io())
+            .subscribe { item ->
+                repository.deleteWatchLater(item)
+                repository.updateFilm(item)
+            }
+            .addTo(disposables)
     }
 
     fun clearError() {
@@ -187,22 +274,40 @@ class FilmViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun clearTables() {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.clearTables()
-        }
+        val clear = Single.just(true)
+        clear.subscribeOn(Schedulers.io())
+            .subscribe { it ->
+                repository.clearTables()
+            }
+            .addTo(disposables)
     }
 
     fun selectFilm(title: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val item = repository.findFilm(title)
-            if (item != null) {
-                withContext(Dispatchers.Main) {
-                    mSelectedFilm.value = item!!
-                }
+        val itemTitle = Single.just(title)
+
+        itemTitle.subscribeOn(Schedulers.io())
+            .map { it ->
+                repository.findFilmByTitle(it)
             }
-        }
+            .filter {
+                it != null
+            }
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ item ->
+                mSelectedFilm.value = item
+            }, {
+                mErrors.value = "Фильм не найден"
+            })
+            .addTo(disposables)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposables.dispose()
     }
 
 }
+
+
 
 

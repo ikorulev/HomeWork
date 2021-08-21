@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "favourites",
     indices = [
-        Index(value = ["title"])
+        Index(value = ["id"])
     ]
 )
 

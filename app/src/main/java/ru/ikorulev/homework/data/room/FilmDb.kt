@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "films",
     indices = [
-        Index(value = ["title"])
+        Index(value = ["id"])
     ]
 )
 

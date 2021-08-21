@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.presentation.view.DatePickerFragment
@@ -50,6 +51,17 @@ class WatchLaterFragment : Fragment() {
                 viewModel.datePickerFilmItem = filmItem
                 val datePickerFragment = DatePickerFragment()
                 datePickerFragment.show(childFragmentManager, "DatePickerFragment")
+            }
+
+            override fun onWatchLaterClick(filmItem: FilmItem) {
+                viewModel.deleteWatchLater(filmItem)
+                Snackbar.make(
+                    view,
+                    "Фильм ${filmItem.filmTitle} успешно удален из списка <Посмотреть позже>",
+                    Snackbar.LENGTH_SHORT
+                )
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                    .show()
             }
         })
 

@@ -11,6 +11,7 @@ import ru.ikorulev.homework.R
 class FavouritesVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val filmImage: ImageView = itemView.findViewById(R.id.filmImage)
     private val filmTitle: TextView = itemView.findViewById(R.id.filmTitle)
+    val filmFavorite: ImageView = itemView.findViewById(R.id.filmFavourites)
 
     fun bind(item: FilmItem) {
         filmTitle.text = item.filmTitle
@@ -19,6 +20,6 @@ class FavouritesVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
             .placeholder(R.drawable.ic_image)
             .error(R.drawable.ic_error)
             .into(filmImage)
-        //favouritesImage.setImageResource(item.filmImage)
+
     }
 }

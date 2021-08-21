@@ -33,11 +33,16 @@ class WatchLaterAdapter (private val clickListener: WatchLaterListener) : Recycl
         holder.watchDateButton.setOnClickListener {
             clickListener.onWatchDateButtonClick(item)
         }
+
+        holder.watchLater.setOnClickListener {
+            clickListener.onWatchLaterClick(item)
+        }
     }
 
     override fun getItemCount(): Int = items.size
 
     interface WatchLaterListener {
         fun onWatchDateButtonClick(filmItem: FilmItem)
+        fun onWatchLaterClick(filmItem: FilmItem)
     }
 }

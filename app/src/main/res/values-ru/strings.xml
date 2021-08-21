@@ -20,4 +20,5 @@
     <string name="Retry">Повторить загрузку?</string>
     <string name="Clear">Очистить таблицы</string>
     <string name="watch_later">Посмотреть позже</string>
+    <string name="select_date">Выберите дату просмотра</string>
 </resources>

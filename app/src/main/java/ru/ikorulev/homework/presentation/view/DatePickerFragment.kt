@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import kotlinx.coroutines.runBlocking
+import ru.ikorulev.homework.R
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 import java.util.*
 
@@ -27,7 +28,7 @@ class DatePickerFragment : DialogFragment() {
                 viewModel.onDatePickerDialogClick(watchDate)
             }
         }, year, month, day)
-        dpd.setTitle("Выберите дату просмотра")
+        dpd.setTitle(getString(R.string.select_date))
         return dpd
     }
 }

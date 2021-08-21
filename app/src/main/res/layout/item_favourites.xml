@@ -17,6 +17,19 @@
         android:adjustViewBounds="true"
         tools:src="@tools:sample/backgrounds/scenic"/>
 
+    <ImageView
+        android:id="@+id/filmFavourites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/favourites"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/favourites_fill"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/filmTitle"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filmImage" />
+
     <TextView
         android:id="@+id/filmTitle"
         style="@android:style/TextAppearance.DeviceDefault.Medium"
@@ -26,7 +39,7 @@
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/filmFavourites"
         app:layout_constraintTop_toBottomOf="@id/filmImage"
         tools:text="@tools:sample/cities" />
 

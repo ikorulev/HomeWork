@@ -1,35 +1,35 @@
 package ru.ikorulev.homework.presentation.view.film
 
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import ru.ikorulev.homework.App
-//import kotlinx.android.extensions.LayoutContainer
-//import kotlinx.android.synthetic.main.item_main.*
-
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
-import ru.ikorulev.homework.domain.Interactor
 
 
-class FilmVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
+class FilmVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val filmImage: ImageView = itemView.findViewById(R.id.filmImage)
     val filmFavorite: ImageView = itemView.findViewById(R.id.filmFavourites)
     val filmTitle: TextView = itemView.findViewById(R.id.filmTitle)
     val filmButton: Button = itemView.findViewById(R.id.filmButton)
+    val watchLater: ImageView = itemView.findViewById(R.id.watchLater)
 
     fun bind(item: FilmItem) {
         if (item.isFavorite) {
             filmFavorite.setImageResource(R.drawable.favourites_fill)
         } else {
             filmFavorite.setImageResource(R.drawable.favourites_border)
+        }
+
+        if (item.isWatchLater) {
+            watchLater.setImageResource(R.drawable.bookmark_filled)
+        } else {
+            watchLater.setImageResource(R.drawable.bookmark_border)
         }
 
         filmTitle.text = item.filmTitle

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "56994086497",
+    "project_id": "homework-ikorulev",
+    "storage_bucket": "homework-ikorulev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:56994086497:android:e1da7a8476beefecb8b420",
+        "android_client_info": {
+          "package_name": "ru.ikorulev.homework"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "56994086497-mbp2l15nfip565l3e7qppkgajctobf7s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCW-mxYI2rceVibY1jt1OfUNt3t_y8Rr4M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "56994086497-mbp2l15nfip565l3e7qppkgajctobf7s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,5 @@
-package ru.ikorulev.homework.presentation.view
+package ru.ikorulev.homework.presentation.view.favourites
+
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,13 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ru.ikorulev.homework.R
-import ru.ikorulev.homework.data.FilmItem
-import ru.ikorulev.homework.presentation.view.favourites.FavouritesAdapter
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 
 class FavouritesFragment : Fragment() {
@@ -35,8 +33,9 @@ class FavouritesFragment : Fragment() {
 
         val recyclerFavourites = view.findViewById<RecyclerView>(R.id.recyclerFavourites)
 
-        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT){
-            val layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            val layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
             recyclerFavourites.layoutManager = layoutManager
 
         } else {

@@ -5,7 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.ikorulev.homework.data.room.Db
+import ru.ikorulev.homework.data.room.DataRepository
 import ru.ikorulev.homework.data.tmdb.TMDbService
 import ru.ikorulev.homework.domain.Interactor
 import java.util.concurrent.TimeUnit
@@ -18,27 +18,30 @@ class App : Application() {
             private set
     }
 
-    lateinit var tmDbService: TMDbService
+    private lateinit var tmDbService: TMDbService
+    private lateinit var dataRepository: DataRepository
+
     lateinit var interactor: Interactor
 
-        override fun onCreate() {
+    override fun onCreate() {
         super.onCreate()
 
         instance = this
 
         initRetrofit()
         initInteractor()
-        initRoom()
     }
 
     private fun initInteractor() {
-        interactor = Interactor(tmDbService)
+        dataRepository = DataRepository()
+        interactor = Interactor(tmDbService, dataRepository)
     }
 
     private fun initRetrofit() {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
-            else HttpLoggingInterceptor.Level.NONE }
+            else HttpLoggingInterceptor.Level.NONE
+        }
 
         val okHttpClient = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
@@ -55,10 +58,5 @@ class App : Application() {
             .build()
 
         tmDbService = retrofit.create(TMDbService::class.java)
-    }
-
-    private fun initRoom() {
-        Db.getInstance(this)?.getFilmDao()
-        Db.getInstance(this)?.getFavouritesDao()
     }
 }

@@ -1,124 +1,56 @@
 package ru.ikorulev.homework.domain
 
-import android.content.DialogInterface
-import android.util.Log
-import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.LiveData
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import ru.ikorulev.homework.App
-import ru.ikorulev.homework.R
-import ru.ikorulev.homework.data.*
-import ru.ikorulev.homework.data.room.Db
-import ru.ikorulev.homework.data.room.FavouritesDb
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.core.content.ContextCompat.getSystemService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import ru.ikorulev.homework.WatchDateReceiver
+import ru.ikorulev.homework.data.FilmItem
+import ru.ikorulev.homework.data.room.DataRepository
 import ru.ikorulev.homework.data.room.FilmDb
-import ru.ikorulev.homework.data.tmdb.GetFilmsResults
 import ru.ikorulev.homework.data.tmdb.TMDbService
+import java.util.*
 
 class Interactor(
 
-    private val tmDbService: TMDbService
+    private val tmDbService: TMDbService,
+    private val dataRepository: DataRepository
 
 ) {
-    //Films
-    fun isEmpty(): Boolean{
-        return Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.getListAll()?.size==0
-    }
-
-    fun deleteAllFilms(){
-        Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.deleteAll()
-    }
-
-    fun loadFilms(page: Int, callback: GetFilmCallback) {
-        val filmDb = mutableListOf<FilmDb>()
-        tmDbService.getPopularFilms(page = page)
-            .enqueue(object : Callback<GetFilmsResults> {
-                override fun onFailure(call: Call<GetFilmsResults>, t: Throwable) {
-                    callback.onError(
-                        App.instance.applicationContext.getString(R.string.Error)
-                    )
-                }
-
-                override fun onResponse(
-                    call: Call<GetFilmsResults>,
-                    response: Response<GetFilmsResults>
-                ) {
-
-                    Log.d("Interactor", "onResponse")
-                    filmDb.clear()
-                    if (response.isSuccessful) {
-                        response.body()?.movies?.forEach {
-                            if (it.filmTitle != null && it.filmTitle.isNotEmpty()
-                                && it.filmPath != null && it.filmPath.isNotEmpty()
-                                && it.filmDetails != null && it.filmDetails.isNotEmpty()
-                            ) {
-                                filmDb.add(
-                                    FilmDb(
-                                        //it.id,
-                                        it.filmTitle,
-                                        it.filmPath,
-                                        it.filmDetails
-                                    )
-                                )
-                            }
-                        }
+    suspend fun loadFilms(page: Int) {
+        return withContext(Dispatchers.IO) {
+            val filmDb = mutableListOf<FilmDb>()
+            tmDbService.getPopularFilms(page = page).let { filmResults ->
+                filmResults.movies.forEach {
+                    if (it.filmId != null && it.filmId != 0
+                        && it.filmTitle != null && it.filmTitle.isNotEmpty()
+                        && it.filmPath != null && it.filmPath.isNotEmpty()
+                        && it.filmDetails != null && it.filmDetails.isNotEmpty()
+                    ) {
+                        filmDb.add(
+                            FilmDb(
+                                it.filmId,
+                                it.filmTitle,
+                                it.filmPath,
+                                it.filmDetails
+                            )
+                        )
                     }
-
-                    Db.getInstance(App.instance.applicationContext)
-                        ?.getFilmDao()?.insert(filmDb.toList())
                 }
-            })
-    }
-
-    interface GetFilmCallback {
-        fun onError(error: String)
-    }
-
-
-    fun updateFilmIsFavorite(filmItem: FilmItem) {
-        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.findByTitle(filmItem.filmTitle)
-        if (filmDb != null) {
-            filmDb.isFavorite = filmItem.isFavorite
-            Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.update(filmDb)
-        }
-    }
-
-    fun selectFilm(filmItem: FilmItem) {
-        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.getListAll()
-        if (filmDb!=null) {
-            filmDb.forEach {
-                it.isSelected = it.filmTitle == filmItem.filmTitle
+                dataRepository.insertFilmDb(filmDb.toList())
             }
-            Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.updateAll(filmDb.toList())
         }
     }
 
-    fun findFilmDb(filmItem: FilmItem): FilmDb? {
-        val filmDb = Db.getInstance(App.instance.applicationContext)?.getFilmDao()?.findByTitle(filmItem.filmTitle)
-        return filmDb
+    fun startNotification(context: Context, film: FilmItem) {
+        val am = getSystemService(context, AlarmManager::class.java)
+        val intent = Intent(film.filmId.toString(), null, context, WatchDateReceiver::class.java)
+            .putExtra("filmTitle", film.filmTitle)
+            .putExtra("filmPath", film.filmPath)
+        val pIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_ONE_SHOT)
+        am?.set(AlarmManager.RTC_WAKEUP, film.watchDate.time, pIntent)
     }
-
-    //Favourites
-    fun findFavourites(filmItem: FilmItem) : Boolean {
-        val favouritesDb = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.findByTitle(filmItem.filmTitle)
-        return favouritesDb != null
-    }
-
-    fun insertFavourites(filmItem: FilmItem) {
-        Db.getInstance(App.instance.applicationContext)
-            ?.getFavouritesDao()?.insert(FavouritesDb(filmItem.filmTitle, filmItem.filmPath))
-    }
-
-    fun deleteFavourites(filmItem: FilmItem) {
-        val favouritesDb = Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.findByTitle(filmItem.filmTitle)
-        if (favouritesDb!=null) {
-            Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.delete(favouritesDb)
-        }
-    }
-
-    fun deleteAllFavourites(){
-        Db.getInstance(App.instance.applicationContext)?.getFavouritesDao()?.deleteAll()
-    }
-
 }

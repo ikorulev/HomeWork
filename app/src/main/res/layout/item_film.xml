@@ -24,9 +24,22 @@
         android:layout_marginStart="16dp"
         android:src="@drawable/favourites_border"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/filmTitle"
+        app:layout_constraintEnd_toStartOf="@id/watchLater"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filmImage" />
+
+    <ImageView
+        android:id="@+id/watchLater"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/watch_later"
+        android:layout_marginStart="16dp"
+        android:src="@drawable/bookmark_border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/filmTitle"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/filmFavourites"
         app:layout_constraintTop_toBottomOf="@id/filmImage" />
 
     <TextView
@@ -34,11 +47,11 @@
         style="@android:style/TextAppearance.DeviceDefault.Medium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:gravity="start"
+        android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/filmButton"
-        app:layout_constraintStart_toEndOf="@id/filmFavourites"
+        app:layout_constraintStart_toEndOf="@id/watchLater"
         app:layout_constraintTop_toBottomOf="@id/filmImage"
         tools:text="@tools:sample/cities" />
 
@@ -55,5 +68,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/filmTitle"
         app:layout_constraintTop_toBottomOf="@id/filmImage" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

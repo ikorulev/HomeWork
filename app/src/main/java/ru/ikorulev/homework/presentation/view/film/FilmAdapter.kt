@@ -7,7 +7,6 @@ import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
 import java.util.*
 
-//class FilmAdapter (private val clickListener: FilmClickListener
 class FilmAdapter(private val clickListener: FilmClickListener) : RecyclerView.Adapter<FilmVH>() {
 
     companion object {
@@ -43,10 +42,15 @@ class FilmAdapter(private val clickListener: FilmClickListener) : RecyclerView.A
         holder.filmFavorite.setOnClickListener {
             clickListener.onFavoriteClick(item)
         }
+
+        holder.watchLater.setOnClickListener {
+            clickListener.onWatchLaterClick(item)
+        }
     }
 
     interface FilmClickListener {
         fun onFilmClick(filmItem: FilmItem)
         fun onFavoriteClick(filmItem: FilmItem)
+        fun onWatchLaterClick(filmItem: FilmItem)
     }
 }

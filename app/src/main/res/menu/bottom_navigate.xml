@@ -9,6 +9,10 @@
         android:icon="@drawable/favourites_fill"
         android:title="@string/favourites" />
     <item
+        android:id="@+id/nav_watch_later"
+        android:icon="@drawable/bookmark_filled"
+        android:title="@string/watch_later" />
+    <item
         android:id="@+id/nav_download"
         android:icon="@drawable/download"
         android:title="@string/download" />

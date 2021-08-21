@@ -9,13 +9,25 @@
         android:id="@+id/filmImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/filmImage"
-        android:src="@drawable/img1"
         android:layout_margin="16dp"
+        android:contentDescription="@string/filmImage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:adjustViewBounds="true"
         tools:src="@tools:sample/backgrounds/scenic"/>
+
+    <Button
+        android:id="@+id/watchDateButton"
+        style="@android:style/TextAppearance.DeviceDefault.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        android:gravity="start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/filmTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filmImage"
+        tools:text="@tools:sample/date/ddmmyy"/>
 
     <TextView
         android:id="@+id/filmTitle"
@@ -23,11 +35,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="start"
-        android:layout_margin="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/watchDateButton"
         app:layout_constraintTop_toBottomOf="@id/filmImage"
         tools:text="@tools:sample/cities" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

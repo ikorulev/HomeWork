@@ -8,7 +8,8 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "films",
     indices = [
-        Index(value = ["id"])
+        Index(value = ["id"]),
+        Index(value = ["sorting"])
     ]
 )
 
@@ -18,7 +19,8 @@ data class FilmDb (
     @ColumnInfo(name = "id") val filmId: Int,
     @ColumnInfo(name = "title")val filmTitle: String,
     @ColumnInfo(name = "path") val filmPath: String,
-    @ColumnInfo(name = "details") val filmDetails: String
+    @ColumnInfo(name = "details") val filmDetails: String,
+    @ColumnInfo(name = "sorting") val filmSorted: Int,
 
 ) {
     var isSelected: Boolean = false

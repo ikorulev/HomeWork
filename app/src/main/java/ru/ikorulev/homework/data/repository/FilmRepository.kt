@@ -18,6 +18,7 @@ interface FilmRepository {
     fun insertFilms(filmDb: List<FilmDb>)
     fun findFilmByTitle(title: String): FilmItem?
     fun updateFilm(filmItem: FilmItem)
+    fun findMaxSorting():Int
 
     //Favourites
     fun getFavourites(): Flowable<List<FavouritesDb>?>

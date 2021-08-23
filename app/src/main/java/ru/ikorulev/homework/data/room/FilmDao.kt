@@ -15,7 +15,7 @@ interface FilmDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     fun updateAll(film: List<FilmDb>)
 
-    @Query("SELECT * FROM films")
+    @Query("SELECT * FROM films ORDER BY sorting")
     fun getAll(): Flowable<List<FilmDb>?>
 
     @Query("SELECT * FROM films")
@@ -26,6 +26,9 @@ interface FilmDao {
 
     @Query("SELECT * FROM films WHERE title = :search")
     fun findByTitle(search: String?): FilmDb?
+
+    @Query("SELECT IFNULL(MAX(sorting), 0) FROM films")
+    fun findMaxSorting(): Int
 
     @Query("DELETE FROM films")
     fun deleteAll()

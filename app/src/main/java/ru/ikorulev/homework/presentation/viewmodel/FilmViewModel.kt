@@ -152,6 +152,7 @@ class FilmViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .map { filmResults ->
                 val filmDb = mutableListOf<FilmDb>()
+                var filmSorting = repository.findMaxSorting()
                 filmResults.movies.forEach {
                     if (it.filmId != 0
                         && it.filmTitle != null && it.filmTitle.isNotEmpty()
@@ -163,7 +164,8 @@ class FilmViewModel @Inject constructor(
                                 it.filmId,
                                 it.filmTitle,
                                 it.filmPath,
-                                it.filmDetails
+                                it.filmDetails,
+                                ++filmSorting
                             )
                         )
                     }

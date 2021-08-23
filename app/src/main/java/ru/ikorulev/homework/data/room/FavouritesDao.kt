@@ -2,7 +2,6 @@ package ru.ikorulev.homework.data.room
 
 import androidx.room.*
 import io.reactivex.Flowable
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavouritesDao {

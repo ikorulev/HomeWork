@@ -9,9 +9,9 @@ import javax.inject.Inject
 
 class FilmDataSource @Inject constructor(
     private val filmDao: FilmDao,
-    private val favouritesDao : FavouritesDao,
+    private val favouritesDao: FavouritesDao,
     private val watchLaterDao: WatchLaterDao
-)  : FilmRepository {
+) : FilmRepository {
     override fun clearTables() {
         filmDao.deleteAll()
         favouritesDao.deleteAll()
@@ -51,6 +51,10 @@ class FilmDataSource @Inject constructor(
             )
         }
         return item
+    }
+
+    override fun findMaxSorting(): Int {
+        return filmDao.findMaxSorting()
     }
 
     override fun updateFilm(filmItem: FilmItem) {

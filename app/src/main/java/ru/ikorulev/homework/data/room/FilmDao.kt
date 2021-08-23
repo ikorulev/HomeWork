@@ -16,10 +16,10 @@ interface FilmDao {
     fun updateAll(film: List<FilmDb>)
 
     @Query("SELECT * FROM films")
-    fun getAll(): Flowable<List<FilmDb>>
+    fun getAll(): Flowable<List<FilmDb>?>
 
     @Query("SELECT * FROM films")
-    fun getListAll(): Single<List<FilmDb>>
+    fun getListAll(): Single<List<FilmDb>?>
 
     @Query("SELECT * FROM films WHERE id = :search")
     fun findById(search: Int): FilmDb?

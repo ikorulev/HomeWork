@@ -10,10 +10,10 @@ interface WatchLaterDao {
     fun insert(film: WatchLaterDb)
 
     @Query("SELECT * FROM watch_later")
-    fun getAll(): Flowable<List<WatchLaterDb>>
+    fun getAll(): Flowable<List<WatchLaterDb>?>
 
     @Query("SELECT * FROM watch_later")
-    fun getListAll(): List<WatchLaterDb>
+    fun getListAll(): List<WatchLaterDb>?
 
     @Query("SELECT * FROM watch_later WHERE id = :search")
     fun findById(search: Int): WatchLaterDb?

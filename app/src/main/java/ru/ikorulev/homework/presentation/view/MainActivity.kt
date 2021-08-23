@@ -29,15 +29,17 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
 
     private lateinit var bottomNavigation: BottomNavigationView
 
-    private lateinit var viewModel: FilmViewModel
-    private lateinit var viewModelFactory: FilmViewModelFactory
-    //private val viewModel: FilmViewModel by viewModels()
-
     @Inject
     lateinit var repository: FilmRepository
 
     @Inject
     lateinit var tMDbService: TMDbService
+
+    @Inject
+    lateinit var viewModelFactory: FilmViewModelFactory
+
+    @Inject
+    lateinit var viewModel: FilmViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

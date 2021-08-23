@@ -3,6 +3,7 @@ package ru.ikorulev.homework.presentation.viewmodel
 import android.app.AlarmManager
 import android.app.Application
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
@@ -28,7 +29,7 @@ class FilmViewModel @Inject constructor(
     val tMDbService: TMDbService
 ) : AndroidViewModel(application) {
 
-    val context = application.applicationContext
+    //val context = application.applicationContext
 
     private val mFilms = MutableLiveData<List<FilmItem>>()
     val films: LiveData<List<FilmItem>>
@@ -61,8 +62,8 @@ class FilmViewModel @Inject constructor(
         val calendar = Calendar.getInstance()
 
         repository.getFilms()
-            ?.subscribeOn(Schedulers.io())
-            ?.map { items ->
+            .subscribeOn(Schedulers.io())
+            .map { items ->
                 items.map { item ->
                     FilmItem(
                         item.filmId,
@@ -76,8 +77,8 @@ class FilmViewModel @Inject constructor(
                     )
                 }
             }
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
                 mFilms.value = it.toList()
             }, {
                 mErrors.value = "Ошибка базы данных"
@@ -85,8 +86,8 @@ class FilmViewModel @Inject constructor(
             ?.addTo(disposables)
 
         repository.getFavourites()
-            ?.subscribeOn(Schedulers.io())
-            ?.map { items ->
+            .subscribeOn(Schedulers.io())
+            .map { items ->
                 items.map { item ->
                     FilmItem(
                         item.filmId,
@@ -100,7 +101,7 @@ class FilmViewModel @Inject constructor(
                     )
                 }
             }
-            ?.observeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
             ?.subscribe({ list ->
                 mFavourites.value = list
             }, {
@@ -109,8 +110,8 @@ class FilmViewModel @Inject constructor(
             ?.addTo(disposables)
 
         repository.getWatchLater()
-            ?.subscribeOn(Schedulers.io())
-            ?.map { items ->
+            .subscribeOn(Schedulers.io())
+            .map { items ->
                 items.map { item ->
                     FilmItem(
                         item.filmId,
@@ -124,8 +125,8 @@ class FilmViewModel @Inject constructor(
                     )
                 }
             }
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({ list ->
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ list ->
                 mWatchLater.value = list
             }, {
                 mErrors.value = "Ошибка базы данных"
@@ -135,13 +136,13 @@ class FilmViewModel @Inject constructor(
 
     fun initFilms() {
         repository.getListFilms()
-            ?.subscribeOn(Schedulers.io())
-            ?.filter {
-                it.size == 0
+            .subscribeOn(Schedulers.io())
+            .filter {
+                it.isEmpty()
             }
-            ?.subscribe({
+            .subscribe {
                 loadFilms(1)
-            })
+            }
             ?.addTo(disposables)
     }
 
@@ -183,12 +184,14 @@ class FilmViewModel @Inject constructor(
     fun onFilmDetailsClick(filmItem: FilmItem) {
         mSelectedFilm.value = filmItem
         repository.getListFilms()
-            ?.subscribeOn(Schedulers.io())
-            ?.subscribe { items ->
-                items.forEach {
+            .subscribeOn(Schedulers.io())
+            .subscribe { items ->
+                items?.forEach {
                     it.isSelected = it.filmTitle == filmItem.filmTitle
                 }
-                repository.updateFilms(items)
+                if (items != null) {
+                    repository.updateFilms(items)
+                }
             }
             ?.addTo(disposables)
     }
@@ -228,18 +231,14 @@ class FilmViewModel @Inject constructor(
                 .subscribe { item ->
                     repository.updateFilm(item)
                     repository.insertWatchLater(item)
-                    startNotification(item)
+                    startNotification(item, getApplication())
                 }
                 .addTo(disposables)
         }
     }
 
-    fun startNotification(film: FilmItem) {
-        val am = ContextCompat.getSystemService(
-
-            context,
-            AlarmManager::class.java
-        )
+    private fun startNotification(film: FilmItem, context: Context) {
+        val am = ContextCompat.getSystemService(context, AlarmManager::class.java)
         val intent = Intent(
             film.filmId.toString(),
             null,
@@ -276,7 +275,7 @@ class FilmViewModel @Inject constructor(
     fun clearTables() {
         val clear = Single.just(true)
         clear.subscribeOn(Schedulers.io())
-            .subscribe { it ->
+            .subscribe { _ ->
                 repository.clearTables()
             }
             .addTo(disposables)
@@ -286,7 +285,7 @@ class FilmViewModel @Inject constructor(
         val itemTitle = Single.just(title)
 
         itemTitle.subscribeOn(Schedulers.io())
-            .map { it ->
+            .map {
                 repository.findFilmByTitle(it)
             }
             .filter {

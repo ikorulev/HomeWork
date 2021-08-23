@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.R
+import ru.ikorulev.homework.presentation.view.watch_later.WatchLaterAdapter
 import java.util.ArrayList
 
-class FavouritesAdapter : RecyclerView.Adapter<FavouritesVH>() {
+class FavouritesAdapter (private val clickListener: FavouritesClickListener)  : RecyclerView.Adapter<FavouritesVH>() {
 
     private val items = ArrayList<FilmItem>()
 
@@ -29,8 +30,14 @@ class FavouritesAdapter : RecyclerView.Adapter<FavouritesVH>() {
         val item = items[position]
 
         holder.bind(item)
+        holder.filmFavorite.setOnClickListener {
+            clickListener.onFavoriteClick(item)
+        }
     }
 
     override fun getItemCount(): Int = items.size
 
+    interface FavouritesClickListener {
+        fun onFavoriteClick(filmItem: FilmItem)
+    }
 }

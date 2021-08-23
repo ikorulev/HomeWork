@@ -3,15 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/HomeWork/app/src/main/res/drawable/alarm.xml" value="0.3828125" />
+        <entry key="..\:/Android/HomeWork/app/src/main/res/drawable/alarm_off.xml" value="0.3828125" />
+        <entry key="..\:/Android/HomeWork/app/src/main/res/drawable/alarm_on.xml" value="0.3828125" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/drawable/bookmark_border.xml" value="0.3828125" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/drawable/bookmark_filled.xml" value="0.3828125" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/drawable/detail.xml" value="0.22135416666666666" />
+        <entry key="..\:/Android/HomeWork/app/src/main/res/drawable/favourites_fill.xml" value="0.3828125" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/layout/activity_main.xml" value="0.20520833333333333" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/layout/fragment_details.xml" value="0.20520833333333333" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/layout/fragment_favourites.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/layout/fragment_list.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/layout/fragment_watch_later.xml" value="0.36666666666666664" />
-        <entry key="..\:/Android/HomeWork/app/src/main/res/layout/item_favourites.xml" value="0.20520833333333333" />
+        <entry key="..\:/Android/HomeWork/app/src/main/res/layout/item_favourites.xml" value="0.33" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/layout/item_film.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/layout/item_watch_later.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/menu/bottom_navigate.xml" value="0.36666666666666664" />

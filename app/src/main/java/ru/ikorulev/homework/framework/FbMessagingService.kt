@@ -1,4 +1,4 @@
-package ru.ikorulev.homework
+package ru.ikorulev.homework.framework
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import ru.ikorulev.homework.R
 import ru.ikorulev.homework.presentation.view.MainActivity
 
 class FbMessagingService : FirebaseMessagingService() {
@@ -17,6 +18,7 @@ class FbMessagingService : FirebaseMessagingService() {
     companion object {
         private const val TAG = "FbMessagingService"
     }
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
         if (remoteMessage.data.isNotEmpty()) {
@@ -30,8 +32,10 @@ class FbMessagingService : FirebaseMessagingService() {
         val filmIntent = Intent(this, MainActivity::class.java)
         filmIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         filmIntent.putExtra("filmTitle", messageBody)
-        val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, filmIntent,
-            PendingIntent.FLAG_ONE_SHOT)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0 /* Request code */, filmIntent,
+            PendingIntent.FLAG_ONE_SHOT
+        )
 
         val builder = NotificationCompat.Builder(this, appName)
             .setSmallIcon(R.drawable.detail)
@@ -41,7 +45,8 @@ class FbMessagingService : FirebaseMessagingService() {
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
 
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Since android Oreo notification channel is needed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -50,8 +55,8 @@ class FbMessagingService : FirebaseMessagingService() {
             channel.description = appName
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
-            val notificationManager = App.instance.getSystemService(NotificationManager::class.java)
-            if (notificationManager.getNotificationChannel(appName)==null) {
+            val notificationManager = getSystemService(NotificationManager::class.java)
+            if (notificationManager.getNotificationChannel(appName) == null) {
                 notificationManager.createNotificationChannel(channel)
             }
         }

@@ -52,7 +52,7 @@ class FilmListFragment : Fragment() {
 
         val adapter = FilmAdapter(object : FilmAdapter.FilmClickListener {
             override fun onFilmClick(filmItem: FilmItem) {
-                viewModel.onFilmClick(filmItem)
+                viewModel.onFilmDetailsClick(filmItem)
                 (activity as? OnFilmDetailsClickListener)?.onFilmDetailsClick(filmItem)
             }
 

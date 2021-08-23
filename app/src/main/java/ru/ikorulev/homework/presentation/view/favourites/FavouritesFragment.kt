@@ -10,7 +10,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import ru.ikorulev.homework.R
+import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 
 class FavouritesFragment : Fragment() {
@@ -19,7 +21,21 @@ class FavouritesFragment : Fragment() {
     }
 
     private val viewModel: FilmViewModel by activityViewModels()
-    private val adapter = FavouritesAdapter()
+    private val adapter = FavouritesAdapter(object : FavouritesAdapter.FavouritesClickListener {
+
+        override fun onFavoriteClick(filmItem: FilmItem) {
+            viewModel.deleteFavourites(filmItem)
+            view?.let {
+                Snackbar.make(
+                    it,
+                    "Фильм ${filmItem.filmTitle} успешно удален из избранного",
+                    Snackbar.LENGTH_SHORT
+                )
+                    .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                    .show()
+            }
+        }
+    })
 
     override fun onCreateView(
         inflater: LayoutInflater,

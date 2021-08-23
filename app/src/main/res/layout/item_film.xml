@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/watch_later"
         android:layout_marginStart="16dp"
-        android:src="@drawable/bookmark_border"
+        android:src="@drawable/alarm"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/filmTitle"
         app:layout_constraintHorizontal_chainStyle="spread_inside"

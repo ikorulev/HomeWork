@@ -23,4 +23,5 @@
     <string name="Retry">Retry the download?</string>
     <string name="Clear">Clear tables</string>
     <string name="watch_later">Watch later</string>
+    <string name="select_date">Select the viewing date</string>
 </resources>

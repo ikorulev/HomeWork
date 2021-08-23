@@ -16,6 +16,7 @@ class WatchLaterVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
     val filmImage: ImageView = itemView.findViewById(R.id.filmImage)
     val watchDateButton: Button = itemView.findViewById(R.id.watchDateButton)
     val filmTitle: TextView = itemView.findViewById(R.id.filmTitle)
+    val watchLater: ImageView = itemView.findViewById(R.id.watchLater)
 
     fun bind(item: FilmItem) {
 

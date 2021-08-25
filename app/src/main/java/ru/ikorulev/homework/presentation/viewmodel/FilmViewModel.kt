@@ -83,7 +83,7 @@ class FilmViewModel @Inject constructor(
             }, {
                 mErrors.value = "Ошибка базы данных"
             })
-            ?.addTo(disposables)
+            .addTo(disposables)
 
         repository.getFavourites()
             .subscribeOn(Schedulers.io())
@@ -102,12 +102,12 @@ class FilmViewModel @Inject constructor(
                 }
             }
             .observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({ list ->
+            .subscribe({ list ->
                 mFavourites.value = list
             }, {
                 mErrors.value = "Ошибка базы данных"
             })
-            ?.addTo(disposables)
+            .addTo(disposables)
 
         repository.getWatchLater()
             .subscribeOn(Schedulers.io())
@@ -131,7 +131,7 @@ class FilmViewModel @Inject constructor(
             }, {
                 mErrors.value = "Ошибка базы данных"
             })
-            ?.addTo(disposables)
+            .addTo(disposables)
     }
 
     fun initFilms() {

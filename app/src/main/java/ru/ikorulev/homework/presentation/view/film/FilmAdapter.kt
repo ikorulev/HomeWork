@@ -39,7 +39,7 @@ class FilmAdapter(private val clickListener: FilmClickListener) : RecyclerView.A
             clickListener.onFilmClick(item)
         }
 
-        holder.filmFavorite.setOnClickListener {
+        holder.favourites.setOnClickListener {
             clickListener.onFavoriteClick(item)
         }
 

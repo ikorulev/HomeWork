@@ -2,7 +2,6 @@ package ru.ikorulev.homework.data.room
 
 import androidx.room.*
 import io.reactivex.Flowable
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WatchLaterDao {
@@ -10,7 +9,7 @@ interface WatchLaterDao {
     fun insert(film: WatchLaterDb)
 
     @Query("SELECT * FROM watch_later")
-    fun getAll(): Flowable<List<WatchLaterDb>?>
+    fun getAll(): Flowable<List<WatchLaterDb>?>?
 
     @Query("SELECT * FROM watch_later")
     fun getListAll(): List<WatchLaterDb>?

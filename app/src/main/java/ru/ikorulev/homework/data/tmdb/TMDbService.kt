@@ -15,6 +15,6 @@ interface TMDbService {
         @Query("api_key") apiKey: String = API_KEY,
         @Query("language") language: String = "ru",
         @Query("page") page: Int = 1
-    ): Single<GetFilmsResults>
+    ): Single<GetFilmsResults>?
 
 }

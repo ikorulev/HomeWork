@@ -9,13 +9,12 @@ import com.bumptech.glide.Glide
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
 import java.text.DateFormat.getDateInstance
-import java.text.SimpleDateFormat
 
 class WatchLaterVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val filmImage: ImageView = itemView.findViewById(R.id.filmImage)
     val watchDateButton: Button = itemView.findViewById(R.id.watchDateButton)
-    val filmTitle: TextView = itemView.findViewById(R.id.filmTitle)
+    val filmTitle: TextView = itemView.findViewById(R.id.favouriteTitle)
     val watchLater: ImageView = itemView.findViewById(R.id.watchLater)
 
     fun bind(item: FilmItem) {

@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/filmImage"
+        android:id="@+id/watchLaterImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -17,7 +17,7 @@
         tools:src="@tools:sample/backgrounds/scenic"/>
 
     <ImageView
-        android:id="@+id/watchLater"
+        android:id="@+id/watchLaterButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/watch_later"
@@ -27,7 +27,7 @@
         app:layout_constraintEnd_toStartOf="@id/watchDateButton"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/filmImage" />
+        app:layout_constraintTop_toBottomOf="@id/watchLaterImage" />
 
     <Button
         android:id="@+id/watchDateButton"
@@ -37,13 +37,13 @@
         android:background="@android:color/transparent"
         android:gravity="start"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/filmTitle"
-        app:layout_constraintStart_toEndOf="@id/watchLater"
-        app:layout_constraintTop_toBottomOf="@id/filmImage"
+        app:layout_constraintEnd_toStartOf="@id/favouriteTitle"
+        app:layout_constraintStart_toEndOf="@id/watchLaterButton"
+        app:layout_constraintTop_toBottomOf="@id/watchLaterImage"
         tools:text="@tools:sample/date/ddmmyy"/>
 
     <TextView
-        android:id="@+id/filmTitle"
+        android:id="@+id/favouriteTitle"
         style="@android:style/TextAppearance.DeviceDefault.Medium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/watchDateButton"
-        app:layout_constraintTop_toBottomOf="@id/filmImage"
+        app:layout_constraintTop_toBottomOf="@id/watchLaterImage"
         tools:text="@tools:sample/cities" />
 
 

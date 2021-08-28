@@ -14,16 +14,16 @@ import ru.ikorulev.homework.data.FilmItem
 class FilmVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     val filmImage: ImageView = itemView.findViewById(R.id.filmImage)
-    val filmFavorite: ImageView = itemView.findViewById(R.id.filmFavourites)
+    val favourites: ImageView = itemView.findViewById(R.id.favourites)
     val filmTitle: TextView = itemView.findViewById(R.id.filmTitle)
     val filmButton: Button = itemView.findViewById(R.id.filmButton)
     val watchLater: ImageView = itemView.findViewById(R.id.watchLater)
 
     fun bind(item: FilmItem) {
         if (item.isFavorite) {
-            filmFavorite.setImageResource(R.drawable.favourites_fill)
+            favourites.setImageResource(R.drawable.favourites_fill)
         } else {
-            filmFavorite.setImageResource(R.drawable.favourites_border)
+            favourites.setImageResource(R.drawable.favourites_border)
         }
 
         if (item.isWatchLater) {

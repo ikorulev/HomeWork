@@ -18,11 +18,11 @@ class FilmDataSource @Inject constructor(
         watchLaterDao.deleteAll()
     }
 
-    override fun getFilms(): Flowable<List<FilmDb>?> {
+    override fun getFilms(): Flowable<List<FilmDb>?>? {
         return filmDao.getAll()
     }
 
-    override fun getListFilms(): Single<List<FilmDb>?> {
+    override fun getListFilms(): Single<List<FilmDb>?>? {
         return filmDao.getListAll()
     }
 
@@ -66,7 +66,7 @@ class FilmDataSource @Inject constructor(
         }
     }
 
-    override fun getFavourites(): Flowable<List<FavouritesDb>?> {
+    override fun getFavourites(): Flowable<List<FavouritesDb>?>? {
         return favouritesDao.getAll()
     }
 
@@ -87,7 +87,7 @@ class FilmDataSource @Inject constructor(
         }
     }
 
-    override fun getWatchLater(): Flowable<List<WatchLaterDb>?> {
+    override fun getWatchLater(): Flowable<List<WatchLaterDb>?>? {
         return watchLaterDao.getAll()
     }
 

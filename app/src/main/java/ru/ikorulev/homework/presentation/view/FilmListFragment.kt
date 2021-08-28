@@ -65,6 +65,7 @@ class FilmListFragment : Fragment() {
                         Snackbar.LENGTH_SHORT
                     )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                        .setAnchorView(R.id.favourites)
                         .show()
                 } else {
                     viewModel.deleteFavourites(filmItem)
@@ -74,6 +75,7 @@ class FilmListFragment : Fragment() {
                         Snackbar.LENGTH_SHORT
                     )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                        .setAnchorView(R.id.favourites)
                         .show()
                 }
             }
@@ -87,6 +89,7 @@ class FilmListFragment : Fragment() {
                         Snackbar.LENGTH_SHORT
                     )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                        .setAnchorView(R.id.watchLater)
                         .show()
                 } else {
                     viewModel.datePickerFilmItem = filmItem  //чтобы передать в datePickerFragment

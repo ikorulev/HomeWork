@@ -9,7 +9,7 @@ interface FavouritesDao {
     fun insert(favourite: FavouritesDb)
 
     @Query("SELECT * FROM favourites")
-    fun getAll(): Flowable<List<FavouritesDb>?>
+    fun getAll(): Flowable<List<FavouritesDb>?>?
 
     @Query("SELECT * FROM favourites WHERE id = :search")
     fun findById(search: Int): FavouritesDb?

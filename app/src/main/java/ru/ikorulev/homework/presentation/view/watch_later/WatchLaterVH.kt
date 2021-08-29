@@ -12,10 +12,10 @@ import java.text.DateFormat.getDateInstance
 
 class WatchLaterVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    val filmImage: ImageView = itemView.findViewById(R.id.filmImage)
+    val watchLaterImage: ImageView = itemView.findViewById(R.id.watchLaterImage)
     val watchDateButton: Button = itemView.findViewById(R.id.watchDateButton)
-    val filmTitle: TextView = itemView.findViewById(R.id.favouriteTitle)
-    val watchLater: ImageView = itemView.findViewById(R.id.watchLater)
+    val watchLaterTitle: TextView = itemView.findViewById(R.id.watchLaterTitle)
+    val watchLaterButton: ImageView = itemView.findViewById(R.id.watchLaterButton)
 
     fun bind(item: FilmItem) {
 
@@ -23,12 +23,12 @@ class WatchLaterVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
         //watchDateButton.text = simpleDateFormat.format(item.watchDate)
         watchDateButton.text = getDateInstance().format(item.watchDate)
 
-        filmTitle.text = item.filmTitle
+        watchLaterTitle.text = item.filmTitle
 
-        Glide.with(filmImage.context)
+        Glide.with(watchLaterImage.context)
             .load("https://image.tmdb.org/t/p/w342${item.filmPath}")
             .placeholder(R.drawable.ic_image)
             .error(R.drawable.ic_error)
-            .into(filmImage)
+            .into(watchLaterImage)
     }
 }

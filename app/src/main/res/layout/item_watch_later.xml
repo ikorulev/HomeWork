@@ -37,13 +37,13 @@
         android:background="@android:color/transparent"
         android:gravity="start"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/favouriteTitle"
+        app:layout_constraintEnd_toStartOf="@id/watchLaterTitle"
         app:layout_constraintStart_toEndOf="@id/watchLaterButton"
         app:layout_constraintTop_toBottomOf="@id/watchLaterImage"
         tools:text="@tools:sample/date/ddmmyy"/>
 
     <TextView
-        android:id="@+id/favouriteTitle"
+        android:id="@+id/watchLaterTitle"
         style="@android:style/TextAppearance.DeviceDefault.Medium"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

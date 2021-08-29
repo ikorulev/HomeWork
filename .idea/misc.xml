@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/HomeWork/app/src/free/res/layout/item_film.xml" value="0.36666666666666664" />
+        <entry key="..\:/Android/HomeWork/app/src/free/res/menu/bottom_navigate.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/drawable/alarm.xml" value="0.3828125" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/drawable/alarm_off.xml" value="0.3828125" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/drawable/alarm_on.xml" value="0.3828125" />
@@ -19,6 +21,8 @@
         <entry key="..\:/Android/HomeWork/app/src/main/res/layout/item_film.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/layout/item_watch_later.xml" value="0.36666666666666664" />
         <entry key="..\:/Android/HomeWork/app/src/main/res/menu/bottom_navigate.xml" value="0.36666666666666664" />
+        <entry key="..\:/Android/HomeWork/app/src/paid/res/layout/item_film.xml" value="0.20572916666666666" />
+        <entry key="..\:/Android/HomeWork/app/src/paid/res/menu/bottom_navigate.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>

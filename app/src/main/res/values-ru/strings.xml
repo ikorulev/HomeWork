@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Поиск фильмов</string>
-    <string name="hello">Привет</string>
-    <string name="title1">Аферистка</string>
-    <string name="title3">Лига справедливости</string>
-    <string name="title2">Папик 2</string>
-    <string name="title4">"Бесстыжие "</string>
     <string name="detail">Детали</string>
     <string name="inviteFriend">Пригласи друга</string>
     <string name="messageText">Предлагаю пойти в кино</string>
@@ -16,9 +10,9 @@
     <string name="favourites">Избранное</string>
     <string name="list">Список</string>
     <string name="download">Загрузить</string>
-    <string name="Error">Ошибка загрузки</string>
-    <string name="Retry">Повторить загрузку?</string>
-    <string name="Clear">Очистить таблицы</string>
+    <string name="error">Ошибка загрузки</string>
+    <string name="retry">Повторить загрузку?</string>
+    <string name="clear">Очистить таблицы</string>
     <string name="watch_later">Посмотреть позже</string>
     <string name="select_date">Выберите дату просмотра</string>
 </resources>

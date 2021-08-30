@@ -4,7 +4,7 @@ import ru.ikorulev.homework.R
 
 class Flavor {
 
-    fun getNavItem(navItem: Int): Int {
+    fun getNavItem(): Int {
         var nav = 0
         when (MainActivity.navItem) {
             R.id.nav_list -> {

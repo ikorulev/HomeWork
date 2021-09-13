@@ -6,15 +6,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.IdlingResource
 import com.google.android.material.snackbar.Snackbar
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
+import ru.ikorulev.homework.idlingresource.SimpleIdlingResource
 import ru.ikorulev.homework.presentation.view.film.FilmAdapter
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 
@@ -56,21 +59,28 @@ class FilmListFragment : Fragment() {
                 (activity as? OnFilmDetailsClickListener)?.onFilmDetailsClick(filmItem)
             }
 
-            override fun onWatchLaterClick(filmItem: FilmItem) {
-                if (filmItem.isWatchLater) {
-                    viewModel.deleteWatchLater(filmItem)
+
+            override fun onFavoriteClick(filmItem: FilmItem) {
+                if (!filmItem.isFavorite) {
+                    viewModel.insertFavourites(filmItem)
                     Snackbar.make(
                         view,
-                        "Фильм ${filmItem.filmTitle} успешно удален из списка <Посмотреть позже>",
+                        "Фильм ${filmItem.filmTitle} успешно добавлен в избранное",
                         Snackbar.LENGTH_SHORT
                     )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
-                        .setAnchorView(R.id.watchLater)
+                        .setAnchorView(R.id.favourites)
                         .show()
                 } else {
-                    viewModel.datePickerFilmItem = filmItem  //чтобы передать в datePickerFragment
-                    val datePickerFragment = DatePickerFragment()
-                    datePickerFragment.show(childFragmentManager, "DatePickerFragment")
+                    viewModel.deleteFavourites(filmItem)
+                    Snackbar.make(
+                        view,
+                        "Фильм ${filmItem.filmTitle} успешно удален из избранного",
+                        Snackbar.LENGTH_SHORT
+                    )
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                        .setAnchorView(R.id.favourites)
+                        .show()
                 }
             }
 

@@ -10,8 +10,8 @@ class Flavor {
             R.id.nav_list -> {
                 nav = 1
             }
-            R.id.nav_watch_later -> {
-                nav = 3
+            R.id.nav_favourites -> {
+                nav = 2
             }
             R.id.nav_download -> {
                 nav = 4

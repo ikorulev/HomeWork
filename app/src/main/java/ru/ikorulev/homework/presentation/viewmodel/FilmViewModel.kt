@@ -5,6 +5,7 @@ import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -20,6 +21,7 @@ import ru.ikorulev.homework.data.repository.FilmRepository
 import ru.ikorulev.homework.data.room.FilmDb
 import ru.ikorulev.homework.data.tmdb.TMDbService
 import ru.ikorulev.homework.framework.WatchDateReceiver
+import ru.ikorulev.homework.idlingresource.SimpleIdlingResource
 import java.util.*
 import javax.inject.Inject
 
@@ -28,8 +30,6 @@ class FilmViewModel @Inject constructor(
     var repository: FilmRepository,
     val tMDbService: TMDbService
 ) : AndroidViewModel(application) {
-
-    //val context = application.applicationContext
 
     private val mFilms = MutableLiveData<List<FilmItem>>()
     val films: LiveData<List<FilmItem>>
@@ -55,6 +55,9 @@ class FilmViewModel @Inject constructor(
         get() = mWatchLater
 
     private val disposables = CompositeDisposable()
+
+    @VisibleForTesting
+    val idlingResource = SimpleIdlingResource()
 
     init {
 
@@ -141,13 +144,13 @@ class FilmViewModel @Inject constructor(
                 it.isEmpty()
             }
             ?.subscribe {
-                loadFilms(1)
+                loadFilms( 1)
             }
             ?.addTo(disposables)
     }
 
     fun loadFilms(page: Int = 1) {
-
+        idlingResource?.setIdleState(false)
         tMDbService.getPopularFilms(page = page)
             ?.subscribeOn(Schedulers.io())
             ?.map { filmResults ->
@@ -173,13 +176,14 @@ class FilmViewModel @Inject constructor(
                 repository.insertFilms(filmDb.toList())
             }
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({}, {
-                mErrors.value = if (it is HttpException) {
-                    "Ошибка сервера, код ${it.code()}"
-                } else {
-                    "Ошибка сети"
-                }
-            })
+            ?.subscribe({ idlingResource?.setIdleState(true) },
+                {
+                    mErrors.value = if (it is HttpException) {
+                        "Ошибка сервера, код ${it.code()}"
+                    } else {
+                        "Ошибка сети"
+                    }
+                })
             ?.addTo(disposables)
     }
 
@@ -276,9 +280,11 @@ class FilmViewModel @Inject constructor(
 
     fun clearTables() {
         val clear = Single.just(true)
+        idlingResource?.setIdleState(false)
         clear.subscribeOn(Schedulers.io())
             .subscribe { _ ->
                 repository.clearTables()
+                idlingResource?.setIdleState(true)
             }
             .addTo(disposables)
     }

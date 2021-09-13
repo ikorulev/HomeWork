@@ -17,12 +17,12 @@
         tools:src="@tools:sample/backgrounds/scenic"/>
 
     <ImageView
-        android:id="@+id/watchLater"
+        android:id="@+id/favourites"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/watch_later"
         android:layout_marginStart="16dp"
-        android:src="@drawable/alarm"
+        android:src="@drawable/favourites_border"
+        android:contentDescription="@string/favourites"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/filmTitle"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -38,7 +38,7 @@
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/filmButton"
-        app:layout_constraintStart_toEndOf="@id/watchLater"
+        app:layout_constraintStart_toEndOf="@id/favourites"
         app:layout_constraintTop_toBottomOf="@id/filmImage"
         tools:text="@tools:sample/cities" />
 

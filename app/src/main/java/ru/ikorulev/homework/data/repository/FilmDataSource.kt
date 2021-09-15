@@ -9,20 +9,20 @@ import javax.inject.Inject
 
 class FilmDataSource @Inject constructor(
     private val filmDao: FilmDao,
-    private val favouritesDao : FavouritesDao,
+    private val favouritesDao: FavouritesDao,
     private val watchLaterDao: WatchLaterDao
-)  : FilmRepository {
+) : FilmRepository {
     override fun clearTables() {
         filmDao.deleteAll()
         favouritesDao.deleteAll()
         watchLaterDao.deleteAll()
     }
 
-    override fun getFilms(): Flowable<List<FilmDb>?> {
+    override fun getFilms(): Flowable<List<FilmDb>?>? {
         return filmDao.getAll()
     }
 
-    override fun getListFilms(): Single<List<FilmDb>?> {
+    override fun getListFilms(): Single<List<FilmDb>?>? {
         return filmDao.getListAll()
     }
 
@@ -53,6 +53,10 @@ class FilmDataSource @Inject constructor(
         return item
     }
 
+    override fun findMaxSorting(): Int {
+        return filmDao.findMaxSorting()
+    }
+
     override fun updateFilm(filmItem: FilmItem) {
         val item = filmDao.findById(filmItem.filmId)
         if (item != null) {
@@ -62,7 +66,7 @@ class FilmDataSource @Inject constructor(
         }
     }
 
-    override fun getFavourites(): Flowable<List<FavouritesDb>?> {
+    override fun getFavourites(): Flowable<List<FavouritesDb>?>? {
         return favouritesDao.getAll()
     }
 
@@ -83,7 +87,7 @@ class FilmDataSource @Inject constructor(
         }
     }
 
-    override fun getWatchLater(): Flowable<List<WatchLaterDb>?> {
+    override fun getWatchLater(): Flowable<List<WatchLaterDb>?>? {
         return watchLaterDao.getAll()
     }
 

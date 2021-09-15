@@ -81,23 +81,24 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
     }
 
     private fun openFragment() {
-        when (navItem) {
-            R.id.nav_list -> {
+
+        when (Flavor().getNavItem()) {
+            1 -> {
                 supportActionBar?.title = getString(R.string.app_name)
                 openFilmList()
             }
-            R.id.nav_favourites -> {
+            2 -> {
                 supportActionBar?.title = getString(R.string.favourites)
                 openFavourites()
             }
-            R.id.nav_watch_later -> {
+            3 -> {
                 supportActionBar?.title = getString(R.string.watch_later)
                 openWatchLater()
             }
-            R.id.nav_download -> {
+            4 -> {
                 viewModel.loadFilms()
             }
-            R.id.nav_clear -> {
+            5 -> {
                 viewModel.clearTables()
             }
         }

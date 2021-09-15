@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import ru.ikorulev.homework.BuildConfig
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.presentation.view.MainActivity
 
@@ -22,7 +23,7 @@ class FbMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
 
         if (remoteMessage.data.isNotEmpty()) {
-            Log.d(TAG, "Message data payload: ${remoteMessage.data}")
+            if (BuildConfig.BUILD_TYPE!="dev") Log.d(TAG, "Message data payload: ${remoteMessage.data}")
             sendNotification(remoteMessage.data.toString())
         }
     }

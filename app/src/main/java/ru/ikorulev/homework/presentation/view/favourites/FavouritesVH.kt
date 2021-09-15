@@ -5,21 +5,21 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.R
+import ru.ikorulev.homework.data.FilmItem
 
 class FavouritesVH (itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private val filmImage: ImageView = itemView.findViewById(R.id.filmImage)
-    private val filmTitle: TextView = itemView.findViewById(R.id.filmTitle)
-    val filmFavorite: ImageView = itemView.findViewById(R.id.filmFavourites)
+    private val favouritesImage: ImageView = itemView.findViewById(R.id.favouritesImage)
+    private val favouriteTitle: TextView = itemView.findViewById(R.id.favouriteTitle)
+    val favouritesButton: ImageView = itemView.findViewById(R.id.favouritesButton)
 
     fun bind(item: FilmItem) {
-        filmTitle.text = item.filmTitle
-        Glide.with(filmImage.context)
+        favouriteTitle.text = item.filmTitle
+        Glide.with(favouritesImage.context)
             .load("https://image.tmdb.org/t/p/w342${item.filmPath}")
             .placeholder(R.drawable.ic_image)
             .error(R.drawable.ic_error)
-            .into(filmImage)
+            .into(favouritesImage)
 
     }
 }

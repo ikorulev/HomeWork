@@ -21,7 +21,7 @@ class NetModule {
     @Provides
     protected fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor {
         val interceptor = HttpLoggingInterceptor().apply {
-            level = if (BuildConfig.DEBUG) HttpLoggingInterceptor.Level.BODY
+            level = if (BuildConfig.DEBUG || (BuildConfig.BUILD_TYPE=="dev")) HttpLoggingInterceptor.Level.BODY
             else HttpLoggingInterceptor.Level.NONE
         }
         return interceptor

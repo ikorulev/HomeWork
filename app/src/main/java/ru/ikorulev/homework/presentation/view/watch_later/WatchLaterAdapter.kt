@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
-import java.util.ArrayList
+import java.util.*
 
 class WatchLaterAdapter (private val clickListener: WatchLaterListener) : RecyclerView.Adapter<WatchLaterVH>() {
 
@@ -34,7 +34,7 @@ class WatchLaterAdapter (private val clickListener: WatchLaterListener) : Recycl
             clickListener.onWatchDateButtonClick(item)
         }
 
-        holder.watchLater.setOnClickListener {
+        holder.watchLaterButton.setOnClickListener {
             clickListener.onWatchLaterClick(item)
         }
     }

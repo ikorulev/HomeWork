@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.HomeWork">
-        <activity android:name=".presentation.view.MainActivity">
+        <activity android:name=".presentation.view.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.SEND" />
@@ -26,11 +27,15 @@
         <receiver android:name=".framework.WatchDateReceiver" />
         <service
             android:name=".framework.FbMessagingService"
-            android:stopWithTask="false">
+            android:stopWithTask="false"
+            android:exported="true">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
     </application>
+    <meta-data
+        android:name="firebase_analytics_collection_deactivated"
+        android:value="@bool/FIREBASE_ANALYTICS_DEACTIVATED"/>
 
 </manifest>

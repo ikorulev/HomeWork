@@ -3,10 +3,9 @@ package ru.ikorulev.homework.presentation.view.favourites
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.R
-import ru.ikorulev.homework.presentation.view.watch_later.WatchLaterAdapter
-import java.util.ArrayList
+import ru.ikorulev.homework.data.FilmItem
+import java.util.*
 
 class FavouritesAdapter (private val clickListener: FavouritesClickListener)  : RecyclerView.Adapter<FavouritesVH>() {
 
@@ -30,7 +29,7 @@ class FavouritesAdapter (private val clickListener: FavouritesClickListener)  : 
         val item = items[position]
 
         holder.bind(item)
-        holder.filmFavorite.setOnClickListener {
+        holder.favouritesButton.setOnClickListener {
             clickListener.onFavoriteClick(item)
         }
     }

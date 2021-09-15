@@ -6,7 +6,8 @@ import androidx.room.TypeConverters
 import ru.ikorulev.homework.data.room.*
 
 @Database(
-    entities = [FilmDb::class, FavouritesDb::class, WatchLaterDb::class], version = FilmDatabase.VERSION
+    entities = [FilmDb::class, FavouritesDb::class, WatchLaterDb::class],
+    version = FilmDatabase.VERSION
 )
 
 @TypeConverters(DateConverters::class)
@@ -16,6 +17,6 @@ abstract class FilmDatabase : RoomDatabase() {
     abstract fun getWatchLaterDao(): WatchLaterDao
 
     companion object {
-        const val VERSION = 9
+        const val VERSION = 10
     }
 }

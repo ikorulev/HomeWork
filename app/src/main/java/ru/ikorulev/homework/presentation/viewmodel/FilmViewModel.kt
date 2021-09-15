@@ -5,6 +5,7 @@ import android.app.Application
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -15,21 +16,20 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
-import ru.ikorulev.homework.framework.WatchDateReceiver
 import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.data.repository.FilmRepository
 import ru.ikorulev.homework.data.room.FilmDb
 import ru.ikorulev.homework.data.tmdb.TMDbService
+import ru.ikorulev.homework.framework.WatchDateReceiver
+import ru.ikorulev.homework.idlingresource.SimpleIdlingResource
 import java.util.*
 import javax.inject.Inject
 
 class FilmViewModel @Inject constructor(
     application: Application,
-    val repository: FilmRepository,
+    var repository: FilmRepository,
     val tMDbService: TMDbService
 ) : AndroidViewModel(application) {
-
-    //val context = application.applicationContext
 
     private val mFilms = MutableLiveData<List<FilmItem>>()
     val films: LiveData<List<FilmItem>>
@@ -56,14 +56,17 @@ class FilmViewModel @Inject constructor(
 
     private val disposables = CompositeDisposable()
 
+    @VisibleForTesting
+    val idlingResource = SimpleIdlingResource()
+
     init {
 
 
         val calendar = Calendar.getInstance()
 
         repository.getFilms()
-            .subscribeOn(Schedulers.io())
-            .map { items ->
+            ?.subscribeOn(Schedulers.io())
+            ?.map { items ->
                 items.map { item ->
                     FilmItem(
                         item.filmId,
@@ -77,8 +80,8 @@ class FilmViewModel @Inject constructor(
                     )
                 }
             }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({
                 mFilms.value = it.toList()
             }, {
                 mErrors.value = "Ошибка базы данных"
@@ -86,8 +89,8 @@ class FilmViewModel @Inject constructor(
             ?.addTo(disposables)
 
         repository.getFavourites()
-            .subscribeOn(Schedulers.io())
-            .map { items ->
+            ?.subscribeOn(Schedulers.io())
+            ?.map { items ->
                 items.map { item ->
                     FilmItem(
                         item.filmId,
@@ -101,7 +104,7 @@ class FilmViewModel @Inject constructor(
                     )
                 }
             }
-            .observeOn(AndroidSchedulers.mainThread())
+            ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe({ list ->
                 mFavourites.value = list
             }, {
@@ -110,8 +113,8 @@ class FilmViewModel @Inject constructor(
             ?.addTo(disposables)
 
         repository.getWatchLater()
-            .subscribeOn(Schedulers.io())
-            .map { items ->
+            ?.subscribeOn(Schedulers.io())
+            ?.map { items ->
                 items.map { item ->
                     FilmItem(
                         item.filmId,
@@ -125,8 +128,8 @@ class FilmViewModel @Inject constructor(
                     )
                 }
             }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ list ->
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({ list ->
                 mWatchLater.value = list
             }, {
                 mErrors.value = "Ошибка базы данных"
@@ -136,22 +139,23 @@ class FilmViewModel @Inject constructor(
 
     fun initFilms() {
         repository.getListFilms()
-            .subscribeOn(Schedulers.io())
-            .filter {
+            ?.subscribeOn(Schedulers.io())
+            ?.filter {
                 it.isEmpty()
             }
-            .subscribe {
-                loadFilms(1)
+            ?.subscribe {
+                loadFilms( 1)
             }
             ?.addTo(disposables)
     }
 
     fun loadFilms(page: Int = 1) {
-
+        idlingResource?.setIdleState(false)
         tMDbService.getPopularFilms(page = page)
-            .subscribeOn(Schedulers.io())
-            .map { filmResults ->
+            ?.subscribeOn(Schedulers.io())
+            ?.map { filmResults ->
                 val filmDb = mutableListOf<FilmDb>()
+                var filmSorting = repository.findMaxSorting()
                 filmResults.movies.forEach {
                     if (it.filmId != 0
                         && it.filmTitle != null && it.filmTitle.isNotEmpty()
@@ -163,29 +167,31 @@ class FilmViewModel @Inject constructor(
                                 it.filmId,
                                 it.filmTitle,
                                 it.filmPath,
-                                it.filmDetails
+                                it.filmDetails,
+                                ++filmSorting
                             )
                         )
                     }
                 }
                 repository.insertFilms(filmDb.toList())
             }
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({}, {
-                mErrors.value = if (it is HttpException) {
-                    "Ошибка сервера, код ${it.code()}"
-                } else {
-                    "Ошибка сети"
-                }
-            })
-            .addTo(disposables)
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe({ idlingResource?.setIdleState(true) },
+                {
+                    mErrors.value = if (it is HttpException) {
+                        "Ошибка сервера, код ${it.code()}"
+                    } else {
+                        "Ошибка сети"
+                    }
+                })
+            ?.addTo(disposables)
     }
 
     fun onFilmDetailsClick(filmItem: FilmItem) {
         mSelectedFilm.value = filmItem
         repository.getListFilms()
-            .subscribeOn(Schedulers.io())
-            .subscribe { items ->
+            ?.subscribeOn(Schedulers.io())
+            ?.subscribe { items ->
                 items?.forEach {
                     it.isSelected = it.filmTitle == filmItem.filmTitle
                 }
@@ -274,9 +280,11 @@ class FilmViewModel @Inject constructor(
 
     fun clearTables() {
         val clear = Single.just(true)
+        idlingResource?.setIdleState(false)
         clear.subscribeOn(Schedulers.io())
             .subscribe { _ ->
                 repository.clearTables()
+                idlingResource?.setIdleState(true)
             }
             .addTo(disposables)
     }

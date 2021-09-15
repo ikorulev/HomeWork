@@ -1,10 +1,7 @@
 package ru.ikorulev.homework.data
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
 import java.util.*
 
-@Parcelize
 data class FilmItem(
 
     val filmId: Int,
@@ -18,4 +15,4 @@ data class FilmItem(
     var isWatchLater: Boolean,
     var watchDate: Date
 
-) : Parcelable
+)

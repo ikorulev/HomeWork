@@ -61,7 +61,7 @@ class FilmListFragment : Fragment() {
                     viewModel.insertFavourites(filmItem)
                     Snackbar.make(
                         view,
-                        "Фильм ${filmItem.filmTitle} успешно добавлен в избранное",
+                        filmItem.filmTitle + " " + getString(R.string.AddFavorites),
                         Snackbar.LENGTH_SHORT
                     )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
@@ -71,7 +71,7 @@ class FilmListFragment : Fragment() {
                     viewModel.deleteFavourites(filmItem)
                     Snackbar.make(
                         view,
-                        "Фильм ${filmItem.filmTitle} успешно удален из избранного",
+                        filmItem.filmTitle + " " + getString(R.string.RemoveFavorites),
                         Snackbar.LENGTH_SHORT
                     )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
@@ -85,7 +85,7 @@ class FilmListFragment : Fragment() {
                     viewModel.deleteWatchLater(filmItem)
                     Snackbar.make(
                         view,
-                        "Фильм ${filmItem.filmTitle} успешно удален из списка <Посмотреть позже>",
+                        filmItem.filmTitle + " " + getString(R.string.RemoveWatchLater),
                         Snackbar.LENGTH_SHORT
                     )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
@@ -121,10 +121,10 @@ class FilmListFragment : Fragment() {
                     setTitle(error)
                     setMessage(getString(R.string.retry))
 
-                    setPositiveButton("Да") { dialogInterface: DialogInterface, i: Int ->
+                    setPositiveButton(getString(R.string.Yes)) { dialogInterface: DialogInterface, i: Int ->
                         viewModel.loadFilms()
                     }
-                    setNegativeButton("Нет") { dialogInterface: DialogInterface, i: Int -> }
+                    setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int -> }
 
                     setCancelable(true)
                 }.create().show()

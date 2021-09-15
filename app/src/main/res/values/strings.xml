@@ -15,4 +15,15 @@
     <string name="watch_later">Watch later</string>
     <string name="select_date">Select the viewing date</string>
     <string name="hello" translatable="false">hello</string>
+    <string name="DatabaseError">Database error</string>
+    <string name="NetworkError">Network error</string>
+    <string name="ServerError">"Server error, code "</string>
+    <string name="MovieNotFound">Movie not found</string>
+    <string name="Confirmation">Confirmation</string>
+    <string name="ConfirmationDialog">Are you sure you want to exit the program?</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="AddFavorites">successfully added to favorites</string>
+    <string name="RemoveFavorites">successfully removed from favorites</string>
+    <string name="RemoveWatchLater"><![CDATA[успешно удален из списка <Посмотреть позже>]]></string>
 </resources>

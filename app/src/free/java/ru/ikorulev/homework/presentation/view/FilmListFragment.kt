@@ -6,18 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.test.espresso.IdlingResource
 import com.google.android.material.snackbar.Snackbar
 import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
-import ru.ikorulev.homework.idlingresource.SimpleIdlingResource
 import ru.ikorulev.homework.presentation.view.film.FilmAdapter
 import ru.ikorulev.homework.presentation.viewmodel.FilmViewModel
 
@@ -59,13 +56,12 @@ class FilmListFragment : Fragment() {
                 (activity as? OnFilmDetailsClickListener)?.onFilmDetailsClick(filmItem)
             }
 
-
             override fun onFavoriteClick(filmItem: FilmItem) {
                 if (!filmItem.isFavorite) {
                     viewModel.insertFavourites(filmItem)
                     Snackbar.make(
                         view,
-                        "Фильм ${filmItem.filmTitle} успешно добавлен в избранное",
+                        filmItem.filmTitle + " " + getString(R.string.AddFavorites),
                         Snackbar.LENGTH_SHORT
                     )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
@@ -75,7 +71,7 @@ class FilmListFragment : Fragment() {
                     viewModel.deleteFavourites(filmItem)
                     Snackbar.make(
                         view,
-                        "Фильм ${filmItem.filmTitle} успешно удален из избранного",
+                        filmItem.filmTitle + " " + getString(R.string.RemoveFavorites),
                         Snackbar.LENGTH_SHORT
                     )
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
@@ -83,7 +79,6 @@ class FilmListFragment : Fragment() {
                         .show()
                 }
             }
-
         })
 
         recyclerFilm.adapter = adapter

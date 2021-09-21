@@ -15,4 +15,15 @@
     <string name="clear">Очистить таблицы</string>
     <string name="watch_later">Посмотреть позже</string>
     <string name="select_date">Выберите дату просмотра</string>
+    <string name="DatabaseError">Ошибка базы данных</string>
+    <string name="NetworkError">Ошибка сети</string>
+    <string name="ServerError">"Ошибка сервера, код "</string>
+    <string name="MovieNotFound">Фильм не найден</string>
+    <string name="Confirmation">Подтверждение</string>
+    <string name="ConfirmationDialog">Вы уверены, что хотите выйти из программы?  </string>
+    <string name="Yes">Да</string>
+    <string name="No">Нет</string>
+    <string name="AddFavorites">успешно добавлен в избранное</string>
+    <string name="RemoveFavorites">успешно удален из избранного</string>
+    <string name="RemoveWatchLater">успешно удален из списка Посмотреть позже</string>
 </resources>

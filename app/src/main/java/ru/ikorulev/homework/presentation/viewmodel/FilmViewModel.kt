@@ -16,6 +16,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
 import retrofit2.HttpException
+import ru.ikorulev.homework.R
 import ru.ikorulev.homework.data.FilmItem
 import ru.ikorulev.homework.data.repository.FilmRepository
 import ru.ikorulev.homework.data.room.FilmDb
@@ -30,6 +31,8 @@ class FilmViewModel @Inject constructor(
     var repository: FilmRepository,
     val tMDbService: TMDbService
 ) : AndroidViewModel(application) {
+
+    private val app = application
 
     private val mFilms = MutableLiveData<List<FilmItem>>()
     val films: LiveData<List<FilmItem>>
@@ -84,7 +87,7 @@ class FilmViewModel @Inject constructor(
             ?.subscribe({
                 mFilms.value = it.toList()
             }, {
-                mErrors.value = "Ошибка базы данных"
+                mErrors.value = app.getString(R.string.DatabaseError)
             })
             ?.addTo(disposables)
 
@@ -108,7 +111,7 @@ class FilmViewModel @Inject constructor(
             ?.subscribe({ list ->
                 mFavourites.value = list
             }, {
-                mErrors.value = "Ошибка базы данных"
+                mErrors.value = app.getString(R.string.DatabaseError)
             })
             ?.addTo(disposables)
 
@@ -132,7 +135,7 @@ class FilmViewModel @Inject constructor(
             ?.subscribe({ list ->
                 mWatchLater.value = list
             }, {
-                mErrors.value = "Ошибка базы данных"
+                mErrors.value = app.getString(R.string.DatabaseError)
             })
             ?.addTo(disposables)
     }
@@ -144,13 +147,13 @@ class FilmViewModel @Inject constructor(
                 it.isEmpty()
             }
             ?.subscribe {
-                loadFilms( 1)
+                loadFilms(1)
             }
             ?.addTo(disposables)
     }
 
     fun loadFilms(page: Int = 1) {
-        idlingResource?.setIdleState(false)
+        idlingResource.setIdleState(false)
         tMDbService.getPopularFilms(page = page)
             ?.subscribeOn(Schedulers.io())
             ?.map { filmResults ->
@@ -176,12 +179,12 @@ class FilmViewModel @Inject constructor(
                 repository.insertFilms(filmDb.toList())
             }
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe({ idlingResource?.setIdleState(true) },
+            ?.subscribe({ idlingResource.setIdleState(true) },
                 {
                     mErrors.value = if (it is HttpException) {
-                        "Ошибка сервера, код ${it.code()}"
+                        app.getString(R.string.ServerError) + it.code()
                     } else {
-                        "Ошибка сети"
+                        app.getString(R.string.NetworkError)
                     }
                 })
             ?.addTo(disposables)
@@ -280,11 +283,11 @@ class FilmViewModel @Inject constructor(
 
     fun clearTables() {
         val clear = Single.just(true)
-        idlingResource?.setIdleState(false)
+        idlingResource.setIdleState(false)
         clear.subscribeOn(Schedulers.io())
             .subscribe { _ ->
                 repository.clearTables()
-                idlingResource?.setIdleState(true)
+                idlingResource.setIdleState(true)
             }
             .addTo(disposables)
     }
@@ -303,7 +306,7 @@ class FilmViewModel @Inject constructor(
             .subscribe({ item ->
                 mSelectedFilm.value = item
             }, {
-                mErrors.value = "Фильм не найден"
+                mErrors.value = app.getString(R.string.MovieNotFound)
             })
             .addTo(disposables)
     }

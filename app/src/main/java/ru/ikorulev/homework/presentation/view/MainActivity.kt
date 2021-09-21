@@ -169,13 +169,13 @@ class MainActivity : AppCompatActivity(), FilmListFragment.OnFilmDetailsClickLis
             }
         } else {
             AlertDialog.Builder(this).apply {
-                setTitle("Подтверждение")
-                setMessage("Вы уверены, что хотите выйти из программы?")
+                setTitle(getString(R.string.Confirmation))
+                setMessage(getString(R.string.ConfirmationDialog))
 
-                setPositiveButton("Да") { dialogInterface: DialogInterface, i: Int ->
+                setPositiveButton(getString(R.string.Yes)) { dialogInterface: DialogInterface, i: Int ->
                     super.onBackPressed()
                 }
-                setNegativeButton("Нет") { dialogInterface: DialogInterface, i: Int -> }
+                setNegativeButton(getString(R.string.No)) { dialogInterface: DialogInterface, i: Int -> }
 
                 setCancelable(true)
             }.create().show()
